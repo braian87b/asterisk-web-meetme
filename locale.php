@@ -1,7 +1,10 @@
 <?php
 
-putenv("LANG=ru_RU");
-$locale = 'ru_RU';
+// putenv("LANG=ru_RU");
+// $locale = 'ru_RU';
+
+putenv("LANG=en_US");
+$locale = 'en_US';
 
 setlocale(LC_ALL, $locale);
 
@@ -12,5 +15,3 @@ bindtextdomain("messages", "./locale");
 textdomain("messages");
 
 bind_textdomain_codeset("messages", 'UTF-8');
-
-?>
