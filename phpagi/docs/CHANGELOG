@@ -2,6 +2,11 @@
 CHANGES
 ----------
 
+Jul 28, 2022 - random author
+	* improved code.
+	* minor refactoring.
+	* reformatted.
+
 May 25, 2005 - David Eder
 	* Added fastpass support.
 

@@ -6,20 +6,19 @@ $as = new AGI_AsteriskManager();
 $res = $as->connect();
 
 $room = 1234;
-$res = $as->Command('meetme list '.$room);
-	
+$res = $as->Command('meetme list ' . $room);
+
 //echo  $res['data'].'</br>';
 
+$line = explode("\n", $res['data']);
 
-$line= split("\n", $res['data']);
-	
 //print_r ($line);
 echo $line[0];
 
-$element= split(' ', $line[0]);
+$element = explode(' ', $line[0]);
 
-print_r ($element);
-	
+print_r($element);
+
 /*
 
 </br>Array
@@ -30,13 +29,10 @@ print_r ($element);
     [3] => 
 )
 
-
 */
 
-flush(); 
+flush();
 ob_flush();
 
 // && DISCONNECTING
 $as->disconnect();
-
-?>

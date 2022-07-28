@@ -800,9 +800,9 @@
       $ret = array('name'=>'', 'protocol'=>'', 'username'=>'', 'host'=>'', 'port'=>'');
       $callerid = trim($callerid);
 
-      if($callerid{0} == '"' || $callerid{0} == "'")
+      if($callerid[0] == '"' || $callerid[0] == "'")
       {
-        $d = $callerid{0};
+        $d = $callerid[0];
         $callerid = explode($d, substr($callerid, 1));
         $ret['name'] = array_shift($callerid);
         $callerid = join($d, $callerid);
@@ -947,7 +947,7 @@
         {
           if($command)
           {
-            switch($code{0})
+            switch($code[0])
             {
               case '2': $text = substr($text, 0, strlen($text) - 1); break; // backspace
               case '5': $mode = 'LOWERCASE'; break;
@@ -985,9 +985,11 @@
     */
     function say_punctuation($text, $escape_digits='', $frequency=8000)
     {
+      $ret = '';
       for($i = 0; $i < strlen($text); $i++)
       {
-        switch($text{$i})
+        $current = $text[$i];
+        switch($current)
         {
           case ' ': $ret .= 'SPACE ';
           case ',': $ret .= 'COMMA '; break;
@@ -1022,7 +1024,7 @@
           case '|': $ret .= 'BAR '; break;
           case '_': $ret .= 'UNDERSCORE '; break;
           case '~': $ret .= 'TILDE '; break;
-          default: $ret .= $text{$i} . ' '; break;
+          default: $ret .= $current . ' '; break;
         }
       }
       return $this->text2wav($ret, $escape_digits, $frequency);
@@ -1081,7 +1083,7 @@
       $ret['code'] = substr($str, 0, 3);
       $str = trim(substr($str, 3));
 
-      if($str{0} == '-') // we have a multiline response!
+      if($str[0] == '-') // we have a multiline response!
       {
         $count = 0;
         $str = substr($str, 1) . "\n";
@@ -1115,11 +1117,11 @@
           if($in_token) // we previously hit a token starting with ')' but not ending in ')'
           {
             $ret['data'] .= ' ' . trim($token, '() ');
-            if($token{strlen($token)-1} == ')') $in_token = false;
+            if($token[strlen($token)-1] == ')') $in_token = false;
           }
-          elseif($token{0} == '(')
+          elseif($token[0] == '(')
           {
-            if($token{strlen($token)-1} != ')') $in_token = true;
+            if($token[strlen($token)-1] != ')') $in_token = true;
             $ret['data'] .= ' ' . trim($token, '() ');
           }
           elseif(strpos($token, '='))
@@ -1207,6 +1209,18 @@
     }	
   }
 
+  function getUserIpAddr()
+  {
+    if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+      $ip = $_SERVER['HTTP_CLIENT_IP']; 
+    } elseif ( !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+      $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }else{
+      $ip = $_SERVER['REMOTE_ADDR']; 
+    }
+    return $ip;
+  }
+
 /**
  * error handler for phpagi
  *
@@ -1250,8 +1264,8 @@
         $message .= 'MySQL error ' . mysql_errno() . ": " . mysql_error() . "\n\n";
 
       // include variables
-      $message .= "\n\nHostname: " . @get_hostname() ."\n";
-      $message .= "\n\nIP Address: " . @gethostbyname(@get_hostname()) ."\n";
+      $message .= "\n\nHostname: " . gethostname() ."\n";
+      $message .= "\n\nIP Address: " . getUserIpAddr() ."\n";
 
       $message .= "\n\nContext:\n" . print_r($context, true);
       $message .= "\n\nGLOBALS:\n" . print_r($GLOBALS, true);
@@ -1266,7 +1280,7 @@
       // send the mail if less than 5 errors
       static $mailcount = 0;
       if($mailcount < 5)
-        @mail('errors@intertech.net', $subject, readable($message));
+        mail('errors@domain.net', $subject, $message);
       $mailcount++;
     }
   }
