@@ -1,0 +1,14 @@
+[mm-announce]
+exten => 9999,1,Set(CALLERID(name)="MMGETOUT")
+exten => 9999,n,Answer
+exten => 9999,n,Playback(conf-will-end-in)
+exten => 9999,n,Playback(digits/5)
+exten => 9999,n,Playback(minutes)
+exten => 9999,n,Hangup
+
+[default]
+;Used by cbEnd script to play end of conference warning
+exten => _mmplay.,1,Answer
+exten => _mmplay.,2,MeetMe(${EXTEN:6}|dq)
+exten => _mmplay.,3,Hangup
+

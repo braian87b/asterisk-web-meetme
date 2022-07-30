@@ -1,166 +1,142 @@
 <?php
-include ("./lib/defines.php");
-include ("./lib/functions.php");
-include ("./lib/database.php");
-include ("locale.php");
 
-getpost_ifset(array('s', 't', 'uuid'));
-                                                                                                                             
-if (defined('AUTH_TYPE')){
-        getpost_ifset(array('AUTH_USER', 'AUTH_PW'));
-        session_set_cookie_params(0, '/' );
-        session_start();
-                                                                                                                             
-        if ($_SESSION['auth']) {
-                if (($_SESSION['lifetime']) <= time()){
-                        unset($_SESSION['auth']);
-                        unset($_SESSION['privilege']);
-                        unset($_SESSION['userid']);
-                        unset($AUTH_USER);
-                        unset($AUTH_PW);
-                }
-        }
-                                                                                                                             
-        if ( $AUTH_USER != NULL &&  $AUTH_PW != NULL ){
-                $user = new userSec();
-                $user -> authenticate($AUTH_USER, $AUTH_PW);
-                $user -> isAdmin($AUTH_USER);
-        }
-                                                                                                                             
-        if ( !($_SESSION['auth']) ) {
-                $section="section99";
-        }
-}
-include ("./lib/header.php");
-include ("./lib/leftnav.php");
+include 'lib/defines.php';
+include 'lib/functions.php';
+include 'lib/database.php';
+include 'lib/phones.php';
+include 'locale.php';
 
+session_start ();
+getpost_ifset (array ('s', 't', 'order', 'sens', 'current_page', 'uuid'));
 
-$query = "SELECT u.first_name, u.last_name, u.email, u.telephone, u.admin, u.password FROM user u WHERE u.id =?";
-$data = array($uuid);
-$result=$db->query($query, $data);
-$row = $result->fetchRow(DB_FETCHMODE_ASSOC);
+if (defined ('AUTH_TYPE') && !isset ($_SESSION['auth']))
+  exit;
 
-if (is_array($row))
-	extract($row);
-if($admin == 'Admin')
+include 'lib/header.php';
+include 'lib/leftnav.php';
+
+$query = "SELECT first_name, last_name, email, admin, password FROM user WHERE id =?";
+$data = array ($uuid);
+$result = $db->query ($query, $data);
+$row = $result->fetchRow (DB_FETCHMODE_ASSOC);
+
+if (is_array ($row))
+  extract ($row);
+
+if ($uuid != $_SESSION['clientid'] && $_SESSION['privilege'] != 'Admin'
+    && $admin != 'Participant')
 {
-	$userAdmin = 1;
+  echo "Can't update another user.";
+  exit;
 }
-else
-{
-	$userAdmin = 0;
-}
+
+$names_locked = 0;
+$cnx = ldap_connect ('127.0.0.1');
+ldap_bind ($cnx);
+$sr = ldap_search ($cnx, 'ou=People,dc=adacore,dc=com', "(|(mail=$email)(adacorealtemail=$email))",
+		   array ('mail', 'givenname', 'sn'));
+$info = ldap_get_entries ($cnx, $sr);
+if ($info['count'] == 1 && $first_name == $info[0]['givenname'][0]
+    && $last_name == $info[0]['sn'][0])
+  $names_locked = 1;
 ?>
 <!-- content BEGIN -->
-<div id="fedora-middle-two">
-<div class="fedora-corner-tr">&nbsp;</div>
-<div class="fedora-corner-tl">&nbsp;</div>
-<div id="fedora-content">
-
-
-<!-- ** ** ** ** ** Part to add the user ** ** ** ** ** -->
-&nbsp;
-<br/>
-<center><?php print _("Enter the details about the user to add"); ?>
-<?php if ($_SESSION['privilege'] == 'Admin') { ?>
-<FORM METHOD=POST NAME="WMAdd" ACTION="user_add_<?php echo AUTH_TYPE; ?>.php?&s=3&t=0&order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo $current_page?>" target="superframe">
-<INPUT TYPE="hidden" NAME="current_page" value=0>
+<div id="main">
+<div id="content" class="content">
+<!-- ** ** ** ** ** Part to update the user ** ** ** ** ** -->
+<FORM METHOD=POST NAME="WMAdd" onsubmit=" return onSubmitUser ('<?php echo AUTH_TYPE; ?>', <?php echo ($_SESSION['privilege'] == 'Admin') ?>)" >
+<INPUT TYPE="hidden" NAME="s" value="<?php echo $s?>">
+<INPUT TYPE="hidden" NAME="t" value="<?php echo $t?>">
+<INPUT TYPE="hidden" NAME="sens" value="<?php echo $sens?>">
+<INPUT TYPE="hidden" NAME="order" value="<?php echo $order?>">
+<INPUT TYPE="hidden" NAME="current_page" value="<?php echo $current_page?>">
 <INPUT TYPE="hidden" NAME="uuid" value="<?php echo $uuid; ?>">
-	<table class="bar-status" width="60%" border="0" cellspacing="1" cellpadding="2" align="center">
+	<table class="borders" align="center">
 		<tbody>
-		<tr>
-		<td align="left" bgcolor="#000033">                     
-				<font face="verdana" size="1" color="#ffffff"><b>&nbsp;&nbsp;<?php print _("First Name"); ?> :</b></font>
-			</td>
-			<td class="bar-search" align="center" bgcolor="#acbdee">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="fname" value="<?php print $first_name ?>"></td>
-			</tr></table></td>
-		</tr>
-		<tr>
-		<td align="left" bgcolor="#000033">                     
-				<font face="verdana" size="1" color="#ffffff"><b>&nbsp;&nbsp;<?php print _("Last Name"); ?> :</b></font>
-			</td>
-			<td class="bar-search" align="center" bgcolor="#acbdee">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="lname" value="<?php print $last_name ?>"></td>
-			</tr></table></td>
-		</tr>
                 <tr>
-		<tr>
-		<td align="left" bgcolor="#000033">                     
-				<font face="verdana" size="1" color="#ffffff"><b>&nbsp;&nbsp;<?php print _("User Email"); ?> :</b></font>
-			</td>
-			<td class="bar-search" align="center" bgcolor="#acbdee">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="userEmail" value="<?php print $email ?>"></td>
-			</tr></table></td>
+		<td class="legend btl">
+		<SPAN title="Email addresss">Email</SPAN></td>
+		<td class="bar-search btr">
+		<SPAN title="Email addresss"><INPUT TYPE="text" NAME="userEmail" <?php if (isset ($email)) echo 'readonly style="background-color:LightGrey"' ?> value="<?php print $email ?>" size=40></span></td>
 		</tr>
 		<tr>
-		<td align="left" bgcolor="#000033">                     
-				<font face="verdana" size="1" color="#ffffff"><b>&nbsp;&nbsp;<?php print _("Telephone"); ?> :</b></font>
-			</td>
-			<td class="bar-search" align="center" bgcolor="#acbdee">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="phone" value="<?php print $telephone ?>"></td>
-			</tr></table></td>
+		<td class="legend">
+		<SPAN title="First name of user">First Name</SPAN></td>
+			<td class="bar-search">
+			<SPAN title="First name of user"><INPUT TYPE="text" NAME="fname" <?php if ($names_locked) echo 'readonly style="background-color:LightGrey"' ?> value="<?php print $first_name ?>" size=30></span></td>
 		</tr>
-                <tr>
- 		<td align="left" bgcolor="#000033">
-				<font face="verdana" size="1" color="#ffffff"><b>&nbsp;&nbsp;<?php print _("Password"); ?> :</b></font>
-			</td>
-			<td class="bar-search" align="center" bgcolor="#acbdee">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td>&nbsp;&nbsp;<INPUT TYPE="password" NAME="userPass" value="<?php print $password ?>"></td>
-			</tr></table></td>
-		</tr>
-
 		<tr>
-		<td align="left" bgcolor="#000033">
-				<font face="verdana" size="1" color="#ffffff"><b>&nbsp;&nbsp;<?php print _("Is Admin"); ?>? :</b></font>
+		<td class="legend">                     
+		<SPAN title="Last name of user">Last Name</SPAN>
 			</td>
-			<td class="bar-search" align="center" bgcolor="#acbdee">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td>&nbsp;&nbsp;
-			<INPUT TYPE="radio" NAME="userAdmin" value="0" <?php if(!$userAdmin) echo 'checked'; ?>> <?php print _("No"); ?>
-			<br />&nbsp;&nbsp;
-			<INPUT TYPE="radio" NAME="userAdmin" value="1" <?php if($userAdmin) echo 'checked'; ?>> <?php print _("Yes"); ?>
-			</td>
-			</tr></table></td>
+			<td class="bar-search">
+			<SPAN title="Last name of user"><INPUT TYPE="text" NAME="lname" <?php if ($names_locked) echo 'readonly style="background-color:LightGrey"' ?> value="<?php print $last_name ?>" size=30></span></td>
 		</tr>
-
+                <tr id="PasswordRow" <?php if ($admin == 'Participant' || (defined('AUTO_CREATE_DOMAIN') && $password == "NIS")) echo 'style="display:none"'; ?>>
+ 		<td class="legend">Password</td>
+			<td class="bar-search">
+			<INPUT TYPE="password" NAME="userPass" value="<?php print $password ?>"></td>
+		</tr>
+                <tr id="VerifyPasswordRow" <?php if ($admin == 'Participant' || (defined('AUTO_CREATE_DOMAIN') && $password == "NIS")) echo 'style="display:none"'; ?>>
+ 		<td class="legend">Verify password</td>
+			<td class="bar-search">
+			<INPUT TYPE="password" NAME="verifyUserPass" value="<?php print $password ?>"></td>
+		</tr>
 		<tr>
-		<td class="bar-search" align="left" bgcolor="#555577"> </td>
-
-			<td class="bar-search" align="center" bgcolor="#cddeff">
+                <td class="legend" title="Add a phone number for this user">
+<button type="button" class="bstandard" onclick="addPhoneToTable('phones');">Add phone</button></td>
+		<td class="bar-search">
+		<table id="phones">
+		<?php
+		$phones = enumerate_phones ($db, $email, $uuid);
+		if (count ($phones))
+		  { ?>
+		<thead><tr><th><b><center>Telephone</center></b></th>
+		<th><b><center>Type</center></b></th></tr></thead><tbody>
+		<?php }  foreach ($phones as $phoneval)
+		  { ?>
+		<tr><td><input type=text name=phone[] id="telephone" size=35 value="<?php echo expand_phone($phoneval[1])?>" <?php if (!is_numeric ($phoneval[2])) echo "readonly style=\"background-color:LightGrey\"" ?> ></td>
+		<td><input type=text name=type[] id="type" size=20 value="<?php echo $phoneval[0]?>" <?php if (!is_numeric ($phoneval[2])) echo "readonly style=\"background-color:LightGrey\"" ?> ><input type=hidden name=from_ldap[] value=1></td>
+		<td><span title="Delete this phone number"><button class=warn <?php if (!is_numeric ($phoneval[2])) echo "style=\"background-color:LightGrey\""; else echo "onClick=\"deleteCurrentRow(this)\""; ?> >Delete</button></span></td>
+		</tr>
+		<?php } ?>
+		</tbody></table>
+		</td>
+		</tr>
+		<?php if ($_SESSION['privilege'] == "Admin"
+			  && (! isset ($email)
+			      || !defined('AUTO_CREATE_DOMAIN')
+			      || strpos ($email, AUTO_CREATE_DOMAIN))) { ?>
+		<tr>
+		<td class="legend">
+		<SPAN title="Privilege level of user">Type</SPAN></td>
+			<td class="bar-search"><b>
+			<SPAN title="Caller Only"><label for="Participant">Caller</label>
+			<INPUT TYPE="radio" NAME="userType" id=".participant" value="Participant" <?php if($admin == "Participant") echo 'checked'; ?>></span>
+			<SPAN title="Ordinary user"><label for="User">&nbsp;&nbsp;&nbsp;&nbsp;User</label>
+			<INPUT TYPE="radio" NAME="userType" id="user" <?php if (defined('AUTO_CREATE_DOMAIN')) { ?> onClick="displayUserPass(this) <?php } ?>" value="User" <?php if($admin == "User") echo 'checked'; ?>></span>
+			<SPAN title="Can view or modify any conference."><label for="User">&nbsp;&nbsp;&nbsp;&nbsp;Manager</label>
+			<INPUT TYPE="radio" NAME="userType" id="Manager" <?php if (defined('AUTO_CREATE_DOMAIN')) { ?> onClick="displayUserPass(this) <?php } ?>" value="Manager" <?php if($admin == "Manager") echo 'checked'; ?>></span>
+			<SPAN title="Can modify user accounts"><label for="Admin">&nbsp;&nbsp;&nbsp;&nbsp;Administrator</label>
+			<INPUT TYPE="radio" NAME="userType" id="Admin" <?php if (defined('AUTO_CREATE_DOMAIN')) { ?> onClick="displayUserPass(this) <?php } ?>" value="Admin" <?php if($admin == "Admin") echo 'checked'; ?>></span>
+			</b></td>
+		<?php } ?>
+		<tr class="lastRow">
+		<td class="legend bbl"> </td>
+			<td class="bar-search bbr" align="center">
+			<span class="actionResult" id="actionResult"></span>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	<?php if ($email) { ?>
-				<input type="Submit"  name="update" align="top" border="0" value="<?php print _("Update User"); ?>" onclick="if(confirm('<?php print _("Are you sure"); ?>?'))return true; else return false;">
-                                <input type="Submit"  name="remove" align="top" border="0" value="<?php print _("Remove User"); ?>" onclick="if(confirm('<?php print _("Are you sure"); ?>?'))return true; else return false;">
-
+				<input type="Submit"  id="_button" name="update" align="top" border="0" value="Update User">
+                                <input type="Submit"  id="_delete" class="warn" name="delete" align="top" border="0" value="Delete User" onClick="if(!confirm('Are you sure you want to delete this user?')) return false; else this.deleting = 1;">
 	<?php } else { ?>
-				<input type="Submit"  name="add" align="top" border="0" value="Add User"/>
+				<input type="Submit"  id="_button" name="add" align="top" border="0" value="Add User">
 	<?php } ?>
 			</td>
 	        </tr>
-<?php }  else { ?>
-	<br><br>
-	<b><?php print _("You Are not an Administrator of this system"); ?>. </b>
-<?php } ?>
 
 	</tbody></table>
 </FORM>
-<script language="javascript">
-<!--
-document.WMAdd.confDesc.focus()
-//-->
-</script>
-
-</center>
-<iframe name="superframe" src="user_add_<?php echo AUTH_TYPE; ?>.php" BGCOLOR=white  width=750 height=400 marginWidth=0 marginHeight=0  frameBorder=0  scrolling=no>
-
-</iframe>
-<center>
-        </div>
-                <!-- content END -->
-                                                                                                                             
-                <!-- footer BEGIN -->
-                <div id="fedora-footer">
-                </div>
-                <!-- footer END -->
-                                                                                                                             
-        </body>
+</div><div id="addUserResult" style="display: none"></div>
+</body>
 </html>

@@ -1,377 +1,302 @@
 <?php
-include ("./lib/defines.php");
-include ("./lib/functions.php");
-include ("./lib/database.php");
-include ("locale.php");
+include 'lib/defines.php';
+include 'lib/functions.php';
+include 'lib/database.php';
+include '../../php/confdata.php';
+include 'locale.php';
 
-session_start();
+session_start ();
 
-getpost_ifset(array('confno','current_page','view','s','t','order','sens'));
-// this variable specifie the debug type (0 => nothing, 1 => sql result, 2 => boucle checking, 3 other value checking)
+include ('lib/header_vars.php');
+
+getpost_ifset (array ('confno', 'current_page', 'view', 's', 't',
+		      'order', 'sens'));
+
+// this variable specifie the debug type (0 => nothing, 1 => sql
+// result, 2 => boucle checking, 3 other value checking)
 $FG_DEBUG = 0;
 
 // The variable FG_TABLE_NAME define the table name to use
-$FG_TABLE_NAME=DB_TABLESCHED;
-$CDR_TABLE_NAME=DB_TABLECDR;
+$FG_TABLE_NAME = DB_TABLESCHED;
+$CDR_TABLE_NAME = DB_TABLECDR;
 
 // The variable Var_col would define the col that we want show in your table
 // First Name of the column in the html page, second name of the field
-$FG_TABLE_COL = array();
+$FG_TABLE_COL = array ();
 
-$FG_TABLE_COL[]=array (_("Conference #"), "confno", "15%", "left", "", "10");
-$FG_TABLE_COL[]=array (_("Conference Name"), "pin", "25%", "left", "", "10");
-$FG_TABLE_COL[]=array (_("Starts"), "starttime", "20%", "left", "SORT", "30");
-$FG_TABLE_COL[]=array (_("Ends"), "endtime", "20%", "left", "", "30");
-$FG_TABLE_COL[]=array (_("Participants"), "maxusers", "10%", "left", "", "4");
+$FG_TABLE_COL[] = array ('Conf. #', 'confno', 'center', 'SORT', '7');
+$FG_TABLE_COL[] = array ('Conference Name', 'confDesc','center', 'SORT', '10');
+$FG_TABLE_COL[] = array ('Start Time', 'starttime', 'center', 'SORT', '30');
+$FG_TABLE_COL[] = array ('End Time', 'endtime', 'center', '', '30');
 
+if ($view == 'Past' || (strlen ($view) > 5 && substr ($view, 0, 5) == 'Hour:'))
+  $FG_TABLE_COL[] = array ('Callers', 'maxUser', 'center', '', '4');
 
+if ($_SESSION['privilege'] != 'User')
+  $FG_TABLE_COL[] = array ('Owner', 'confOwner', 'center', 'SORT', '10');
 
-$FG_TABLE_DEFAULT_ORDER = "starttime";
-//$FG_TABLE_DEFAULT_SENS = "ASC";
-$FG_TABLE_DEFAULT_SENS = "DESC";
+$FG_TABLE_DEFAULT_ORDER = 'starttime';
+$FG_TABLE_DEFAULT_SENS = 'DESC';
 
-// This Variable store the argument for the SQL query
-$FG_QUERY='confno, confDesc, starttime, endtime, maxusers, bookId, pin, confOwner, adminpin, adminopts, opts';
-$CDR_QUERY='bookId';
+// This Variable stores the argument for the SQL query
+$FG_QUERY = 'confno, confDesc, starttime, endtime, maxUser, bookId, pin, confOwner, adminpin, adminopts, opts, recordingfilename, recordingformat';
+$CDR_QUERY = 'bookId';
 
 // The variable LIMITE_DISPLAY define the limit of record to display by page
-$FG_LIMITE_DISPLAY=15;
-$FG_LIMITE_DISPLAY_BLANK_LINE=5;
+$FG_LIMITE_DISPLAY = 1000;
 
 // Number of column in the html table
-$FG_NB_TABLE_COL=count($FG_TABLE_COL);
+$FG_NB_TABLE_COL = count ($FG_TABLE_COL);
 
 //This variable will store the total number of column
 $FG_TOTAL_TABLE_COL = $FG_NB_TABLE_COL;
 
-//This variable define the Title of the HTML table
-$FG_HTML_TABLE_TITLE=" - "._("Scheduled Conference")." : ";
+if ($FG_DEBUG == 3)
+  echo "<br>Table : $FG_TABLE_NAME  	- 	Col_query : $FG_QUERY";
 
-//This variable define the width of the HTML table
-$FG_HTML_TABLE_WIDTH="100%";
+if ( !isset ($order) || !isset ($sens))
+  {
+    $order = $FG_TABLE_DEFAULT_ORDER;
+    $sens  = $FG_TABLE_DEFAULT_SENS;
+  }
 
+if (!isset ($current_page))
+  $current_page = 0;
 
+$now = getConfDate ();
 
+$orig_view = $view;
+if ($view == 'Clone')
+  {
+    $FG_HTML_TABLE_TITLE = _('All Conferences');
+    $FG_CLAUSE = '';
+    if (isset ($confno) && $confno)
+      $FG_CLAUSE = "(confno LIKE '%$confno%' OR confDesc LIKE '%$confno%')";
+  }
 
-if ($FG_DEBUG == 3) echo "<br>Table : $FG_TABLE_NAME  	- 	Col_query : $FG_QUERY";
+elseif ($view == 'Past')
+  {
+    $FG_HTML_TABLE_TITLE = _('Previous Conferences');
+    $FG_CLAUSE = "endtime<='$now'";
+    if (isset ($confno) && $confno)
+      $FG_CLAUSE
+	.= " AND (confno LIKE '%$confno%' OR confDesc LIKE '%$confno%')";
+  }
 
-if ( !isset ($current_page) )
-	$current_page = 0;
-
-$now=getConfDate();
-
-if ($view=="Past"){
-	$FG_CLAUSE = "endtime<='$now'";
-	if (isset($confno) && $confno != ""){
-		$FG_CLAUSE .= " AND confno='$confno'";
-	}	
-} elseif ($view=="Current") {
-	$FG_CLAUSE = "starttime<='$now' AND endtime>='$now'";
-        if (isset($confno) && $confno != ""){
-                $FG_CLAUSE .= " AND confno='$confno'";
-	}
-} else {
-        $FG_CLAUSE = "starttime>='$now'";
-        if (isset($confno) && $confno != ""){
-                $FG_CLAUSE .= " AND confno='$confno'";
-        }
-}
-
-if ( !isset ($order) ){
-	$order = $FG_TABLE_DEFAULT_ORDER;
-}
-
-if ( !isset ($sens) ){
-	$sens  = $FG_TABLE_DEFAULT_SENS;
-}
+elseif ($view == 'Current')
+  {
+    $FG_HTML_TABLE_TITLE = _('Current Conferences');
+    $fuzzy_start = getConfDate (time () + 15*60);
+    $fuzzy_end = getConfDate (time () - (45*60));
+    $FG_CLAUSE = "starttime<='$fuzzy_start' AND endtime>='$fuzzy_end'";
+    if (isset ($confno) && $confno)
+      $FG_CLAUSE .= " AND confno='$confno'";
+  }
+elseif (strlen ($view) > 5 && substr ($view, 0, 5) == 'Hour:')
+  {
+    $hour = substr ($view, 5);
+    $arr = explode (' ' , $hour);
+    $time = strtotime ($arr[0]) + intval ($arr[1]) * 3600;
+    $FG_HTML_TABLE_TITLE = 'Conferences on ' . date ('F j, Y \a\t ga', $time);
+    $FG_CLAUSE = "starttime LIKE '$hour%'";
+    if (isset ($confno) && $confno)
+      $FG_CLAUSE .= " AND confno='$confno'";
+    $view = 'Past';
+  }
+else
+   {
+     $FG_HTML_TABLE_TITLE = _('Scheduled Conferences');
+     $FG_CLAUSE = "starttime>='$now'";
+     if (isset ($confno) && $confno)
+       $FG_CLAUSE
+	 .= " AND (confno LIKE '%$confno%' OR confDesc LIKE '%$confno%')";
+     $sens = 'ASC';
+   }
 
 //get only conferences user is owner of
 if (defined ('AUTH_TYPE')) 
 {
-        $FG_USER=$_SESSION['userid'];
-	if($_SESSION['privilege'] == 'User')
-	{
-		$client_clause = "confOwner='$FG_USER'";
-		$client_clause2 = "AND $client_clause";
-	}
-	else
-	{
-		$client_clause = "";
-		$client_clause2 = "";
-	}
-	if ($FG_CLAUSE=="") {
-                $FG_CLAUSE = $client_clause;
-        } else {
-                $FG_CLAUSE  = "$FG_CLAUSE $client_clause2";
-        }
-}
+  $FG_USER = $_SESSION['userid'];
+  if (!$FG_USER)
+    exit;
 
-	$nb_record = $db->getOne("SELECT COUNT(*) FROM $FG_TABLE_NAME WHERE $FG_CLAUSE");
-	$record_start = intval($current_page*$FG_LIMITE_DISPLAY);
+  if($_SESSION['privilege'] == 'User')
+    $client_clause = "confOwner='$FG_USER'";
 
-	$query = "SELECT $FG_QUERY FROM $FG_TABLE_NAME WHERE $FG_CLAUSE ORDER BY $order $sens LIMIT $FG_LIMITE_DISPLAY OFFSET $record_start";
-	$result = $db->query($query);
+  if ($FG_CLAUSE && isset ($client_clause))
+    $FG_CLAUSE .= " AND $client_clause";
+  elseif (!$FG_CLAUSE && isset ($client_clause))
+    $FG_CLAUSE = $client_clause;
 
-	$i = 0;
-	$list = "";
-	while($row = $result->fetchRow())
-		$list[$i++] = $row;
+  if ($FG_CLAUSE)
+    $FG_CLAUSE = "WHERE $FG_CLAUSE";
+ }
 
+$nb_record = $db->getOne ("SELECT COUNT(*) FROM $FG_TABLE_NAME $FG_CLAUSE");
+$record_start = intval ($current_page * $FG_LIMITE_DISPLAY);
 
+$query = "SELECT $FG_QUERY FROM $FG_TABLE_NAME $FG_CLAUSE ORDER BY $order $sens LIMIT $FG_LIMITE_DISPLAY OFFSET $record_start";
+$result = $db->query ($query);
 
-if ($FG_DEBUG >= 1) var_dump ($list);
+$list = array ();
+$i = 0;
+while ($row = $result->fetchRow ())
+  $list[$i++] = $row;
 
-if ($nb_record<=$FG_LIMITE_DISPLAY){ 
-	$nb_record_max=1;
-}else{ 
-	$nb_record_max=(intval($nb_record/$FG_LIMITE_DISPLAY)+1);
-}
+$confs = get_conf_list ();
+foreach ($confs as $room)
+  if ($room['room'] >= 201 && $room['room'] <= 209)
+    $list[$i++] = array ($room['room'], "Conference Room $room[room]",
+			 '------', '------', 0, 0, '', '------', '', '', '',
+			 '', '');
 
-if ($FG_DEBUG == 3) echo "<br>Nb_record : $nb_record";
-if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
-if ($FG_DEBUG == 3) echo "<br>current_page : $current_page";
-if ($FG_DEBUG == 3) echo "<br>Search clause : $FG_CLAUSE";
-if ($FG_DEBUG == 3) echo "<br>Order clause : $order";
-if ($FG_DEBUG == 3) echo "<br>Sense clause : $sens";
+$FG_HTML_TABLE_TITLE .= ' (' . count ($list) . ')';
+if ($FG_DEBUG >= 1)
+  var_dump ($list);
 
+if ($nb_record <= $FG_LIMITE_DISPLAY)
+  $nb_record_max = 1;
+else
+  $nb_record_max = (intval (($nb_record - 1) / $FG_LIMITE_DISPLAY) + 1);
 
-
-
+if ($FG_DEBUG == 3)
+  {
+    echo "<br>Nb_record : $nb_record";
+    echo "<br>Nb_record_max : $nb_record_max";
+    echo "<br>current_page : $current_page";
+    echo "<br>Search clause : $FG_CLAUSE";
+    echo "<br>Order clause : $order";
+    echo "<br>Sense clause : $sens";
+  }
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-	<head>
-		<title><?php print GUI_TITLE; ?> control</title>
-		<meta http-equiv="Content-Type" content="text/html">
-		
-		<link rel="stylesheet" type="text/css">
-		<style type="text/css" media="screen">
-			@import url("css/content.css");
-			@import url("css/docbook.css");
-		</style>
-		
-		<script language="JavaScript" type="text/JavaScript">
-		<!--
-		function MM_openBrWindow(theURL,winName,features) { //v2.0
-		  window.open(theURL,winName,features);
-		}
-		
-		//-->
-		</script>
-	</head>
-	<body>
-
-
-
-<br><br>
 
 <!-- ** ** ** ** ** Part to display the conference  ** ** ** ** ** -->
-<center>
-<?php if (is_array($list) && (!defined ('AUTH_TYPE') || $_SESSION['auth'])){ ?>
-      <table width="<?php echo $FG_HTML_TABLE_WIDTH; ?>" border="0" align="center" cellpadding="0" cellspacing="0">
-		<TR bgcolor="#ffffff"> 
-          <TD bgColor=#7f99cc height=16 style="PADDING-LEFT: 5px; PADDING-RIGHT: 3px"> 
-            <TABLE border=0 cellPadding=0 cellSpacing=0 width="100%">
-              <TBODY>
-                <TR> 
-                  <TD><SPAN style="COLOR: #ffffff; FONT-SIZE: 11px"><B><?php echo $FG_HTML_TABLE_TITLE; ?></B></SPAN></TD>
-                  <TD align=right> <IMG alt="Back to Top" border=0 height=12 src="images/btn_top_12x12.gif" width=12> 
-                  </TD>
-                </TR>
-              </TBODY>
-            </TABLE></TD>
-        </TR>
-        <TR> 
-          <TD> 
-		  	<TABLE border=0 cellPadding=0 cellSpacing=0 width="100%">
-			<TBODY>
-			
-                <TR bgColor=#F0F0F0> 
-				
-				  
+<script language="javascript">
+$(function () { setupUI ($('#updateResult')); } );
+</script>
+<?php if (isset ($list) && is_array ($list) && count ($list) > 0) { ?>
+<div class="bar-status">
+  <div class="listheader btl btr"><?php echo $FG_HTML_TABLE_TITLE; ?></DIV>
+    <TABLE class="data">
+       <THEAD>
+                <TR class="color1">
                   <?php 
-				  	if (is_array($list) && count($list)>0){
-					
-				  	for($i=0;$i<$FG_NB_TABLE_COL;$i++){ 
-					//	$FG_TABLE_COL[$i][1];			
-					//	$FG_TABLE_COL[]=array ("Name", "name", "20%");
-					?>				
-				  
-					
-                  <TD width="<?php echo $FG_TABLE_COL[$i][2]; ?>" align=left class="tableBody" style="PADDING-BOTTOM: 2px; PADDING-LEFT: 2px; PADDING-RIGHT: 2px; PADDING-TOP: 2px"> 
+			if (is_array ($list) && count ($list) > 0)
+			  {
+			    for ($i = 0; $i < $FG_NB_TABLE_COL; $i++)
+			      { ?>				
+                  <TH align="<?php echo $FG_TABLE_COL[$i][2]; ?>"> 
                     <strong> 
-                    <?php if (strtoupper($FG_TABLE_COL[$i][4])=="SORT"){?>
-                    <a href="<?php echo $_SERVER[PHP_SELF]."?s=$s&t=$t&view=$view&current_page=$current_page&order=".$FG_TABLE_COL[$i][1]."&sens="; if ($sens=="ASC"){echo"DESC";}else{echo"ASC";};  if (strlen(confno)) echo "&confno=$confno";
-					echo "\"";?>"> 
-                    <span class="liens">
+                    <?php if (strtoupper ($FG_TABLE_COL[$i][3])=="SORT"){?>
+                    <SPAN title="Sort by <?php echo $FG_TABLE_COL[$i][0]; 
+		    if ($order==$FG_TABLE_COL[$i][1] && $sens=="ASC")
+			echo " in descending order";
+		    elseif ($order==$FG_TABLE_COL[$i][1] && $sens=="DESC")
+			echo " in ascending order";?>">
+		    <a href="javascript:void(0)" onclick="dynamicLoad ('#updateResult', '<?php echo $_SERVER['PHP_SELF']."?s=$s&t=$t&view=$orig_view&current_page=$current_page&order=".$FG_TABLE_COL[$i][1]."&sens="; if ($order==$FG_TABLE_COL[$i][1] && $sens=="ASC"){echo"DESC";}else{echo"ASC";} if (isset ($confno)) echo "&confno=$confno";
+					echo "";?>')"> 
+                    <span class="liens"><?php } ?>
+                    <?php echo $FG_TABLE_COL[$i][0]; ?> 
+                    <?php if ($order == $FG_TABLE_COL[$i][1] && $sens == "ASC"){?>
+                    &nbsp;<img src="images/icon_up_12x12.gif"> 
+                    <?php }elseif ($order == $FG_TABLE_COL[$i][1] && $sens == "DESC"){?>
+                    &nbsp;<img src="images/icon_down_12x12.gif"> 
+		<?php }
+		if (strtoupper ($FG_TABLE_COL[$i][3]) == "SORT")
+		  echo "</span></span></a>"; 
+		?>
+                    </strong></TH>
 		<?php 
 		}
-		echo $FG_TABLE_COL[$i][0];
-		if ($order==$FG_TABLE_COL[$i][1] && $sens=="ASC")
-		{
-		?>
-                    &nbsp;<img src="images/icon_up_12x12.gif" width="12" height="12" border="0"> 
-		<?php
-		}
-		elseif ($order==$FG_TABLE_COL[$i][1] && $sens=="DESC")
-		{
-		?>
-                    &nbsp;<img src="images/icon_down_12x12.gif" width="12" height="12" border="0"> 
-		<?php 
-		}
-		if (strtoupper($FG_TABLE_COL[$i][4])=="SORT")
-		{
-			echo "</span></a>"; 
-		}
-		?>
-                    </strong></TD>
-		<?php 
-		}
-		echo "</TR>";
-		$ligne_number=-1;					 
+		echo "</TR></THEAD><TBODY>"; 
+		$ligne_number = -1;
 		foreach ($list as $recordset)
-		{ 
-			$adminopts = $recordset[9];
-			$ligne_number++;
-			if ($recordset[0]=="2")
-			{ 
+		  { 
+		    $adminopts = $recordset[9];
+		    $ligne_number++;
+		    if ($recordset[0] == "2")
+		      { 
 		?>
-		<TR bgcolor="<?php echo $FG_TABLE_ROW_COLOR_ADMIN; ?>"  onMouseOver="bgColor='#FFA5A5'" onMouseOut="bgColor='<?php echo $FG_TABLE_ROW_COLOR_ADMIN; ?>'"> 
+		<TR class="coloradmin">
 			<?php 
 			}
 			else
 			{ 
 			?>
-               		 	<TR bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]; ?>"  onMouseOver="bgColor='#C4FFD7'" onMouseOut="bgColor='<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]; ?>'"> 
+			<TR class="color<?php echo $ligne_number%2; ?>"> 
 			<?php 
 			}
-			for($i=0;$i<$FG_NB_TABLE_COL;$i++)
-			{
-				$record_display = $recordset[$i];
-				if($i == 2 || $i ==3)
-				{
-					$tmpTime=strtotime($recordset[$i]);
-					$record_display = date("m/d/y g:ia", $tmpTime);
-				}
-				if ($i == 0)
-				{ 
+			for ($i = 0; $i < $FG_NB_TABLE_COL; $i++)
+			  {
+			    $record_display = $recordset[$i];
+			    if ($FG_TABLE_COL[$i][1] == 'confOwner')
+			      $record_display = $recordset[7];
+			    elseif ($FG_TABLE_COL[$i][1] == 'maxUser')
+			      {
+				$record_display = $recordset[4];
+				if ($record_display == "0")
+				  $record_display = "UNL";
+			      }
+			    elseif ($i == 2 || $i == 3)
+			      $record_display = display_date ($record_display);
+			    if ($i == 0)
+			      { 
 			?>
-                 		 <TD width="<?php echo $FG_TABLE_COL[$i][2]; ?>" vAlign=middle align="<?php $FG_TABLE_COL[$i][3]; ?>" class=tableBody>
+                 		 <TD align="<?php echo $FG_TABLE_COL[$i][2]; ?>">
 		<?php 
 			if ($view == "Current")
 			{ 
 		?>
-                <a href="./meetme_control.php?s=1&t=0&confno=<?php
-		echo $recordset[0]; echo "&book=$recordset[5]";?>" target="_top">
-                <?php echo stripslashes($record_display); ?></a></TD>
+                <span title="Control conference <?php echo $recordset[0]; ?>"><a href="index.php?s=1&t=0&confno=<?php echo $recordset[0]; ?>">
+                <?php echo stripslashes ($record_display); ?></a></span></TD>
                                         <?php } elseif ($view == "Past"){ 
-			if(strchr($adminopts, 'r') && (file_exists(RECORDING_PATH . "meetme-conf-rec-".$recordset[0]."-".$recordset[5].".wav")) )
+				    if (strchr ($adminopts, 'r') && strlen ($recordset[11]) && (file_exists ($recordset[11] . "." . $recordset[12])))
 			{
-				echo "<a href=\"javascript:;\" onClick=\"window.open('" . str_replace("https", "http", WEBROOT) ."play.php?confno=$recordset[0]&bookId=$recordset[5]', 'newWin', 'toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=350,height=100')\" class=\"image-link\">&nbsp;<img src=\"images/speaker.gif\" alt=\"Play\" border=0 style=\"{text-decoration: none;}\"></a>";
-				echo "<a href=\"javascript:;\" onCLick=\"window.open(' " . WEBROOT ."conf_cdr.php?&bookId=$recordset[5]&confno=$recordset[0]', 'newWin', 'toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=500,height=400')\">";
+				echo "<a href=\"javascript:void(0)\" onClick=\"window.open('play.php?confno=$recordset[0]&bookId=$recordset[5]', 'newWin', 'toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=350,height=100')\" class=\"image-link\">&nbsp;<img src=\"images/speaker.gif\" alt=\"Listen to this conference's recording\" border=0 style=\"{text-decoration: none;}\"></a>";
+				echo "<span title=\"See participants in conference $recordset[0]\"><a href=\"javascript:void(0)\" onClick=\"dynamicLoad ('#cdrResult', 'conf_cdr.php?bookId=$recordset[5]&confno=$recordset[0]')\">";
 			}
 			else
 			{
-				echo "<img src=\"images/spacer.gif\" width=\"20\">&nbsp;";
-				echo "<a href=\"javascript:;\" onCLick=\"window.open('" . WEBROOT ."conf_cdr.php?&bookId=$recordset[5]&confno=$recordset[0]', 'newWin', 'toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=500,height=400')\">";
+				echo "<span title=\"See participants in conference $recordset[0]\"><a href=\"javascript:void(0)\" onClick=\"dynamicLoad ('#cdrResult', 'conf_cdr.php?bookId=$recordset[5]&confno=$recordset[0]')\">";
 			}
-
-                 echo " " . stripslashes($record_display); 
-		?>
-		</TD>
-					<?php } else { ?>
-		<a href="./meetme_control.php?s=2&t=0&bookId=
+                 echo stripslashes ($record_display); 
+		?></a></span></TD><?php } else { ?>
+		<span title="<?php if ($view == 'Clone') echo "Clone"; else echo "Update"; ?> conference <?php echo $recordset[0]; ?>"><a href="index.php?s=<?php echo $conf_sel;?>&t=<?php echo $conf_add_sel; if ($view == 'Clone') echo '&clone=1'?>&bookId=
 		<?php 
-		echo "$recordset[5]\" target=\"_top\">" . stripslashes($record_display); ?></a>
+		echo "$recordset[5]\">" . stripslashes($record_display); ?></span></a>
 		</TD>
 								 
-				<?php }} elseif (($i == 4) && ($view == "Past")) { 
-					//$CDR_TABLE_CLAUSE = "bookId='$recordset[5]'";
-					$CDR_TABLE_CLAUSE = "userfield='$recordset[5]'";
+				<?php } } elseif (($FG_TABLE_COL[$i][1] == 'maxUser') && ($view == "Past")) { 
+					$CDR_TABLE_CLAUSE = "bookId='$recordset[5]'";
                                         $cdr_count = $db->getOne("SELECT COUNT(*) FROM $CDR_TABLE_NAME WHERE $CDR_TABLE_CLAUSE");?>
 
-                                 <TD width="<?php echo $FG_TABLE_COL[$i][2]; ?>" vAlign=middle align="<?php echo $FG_TABLE_COL[$i][3]; ?>" class=tableBody><?php echo $cdr_count ?>/<?php echo stripslashes($record_display); ?></TD>
-
+                                 <TD align="<?php echo $FG_TABLE_COL[$i][2]; ?>"><?php echo $cdr_count ?></TD>
                                  <?php } else { ?>
-                                        <TD width="<?php echo $FG_TABLE_COL[$i][2]?>" vAlign=middle align="<?php echo $FG_TABLE_COL[$i][3]; ?>" class=tableBody><?php echo stripslashes($record_display); ?></TD>
- 
-				<?php } ?>		 
-				   	<?php } ?>	
-				   		 </TD>  
-					</TR>
-				<?php
-					 }
-					 while ($ligne_number < $FG_LIMITE_DISPLAY_BLANK_LINE){
-					 	$ligne_number++;
-				?>
-					<TR bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]; ?>"> 
-					</TR>
-									
-				<?php					 
-					 } //END_WHILE
-					 
-				  }else{
-				  		echo _("No data found")." !!!";				  
-				  }//end_if
-				 ?>
-                
-                <TR> 
-                  <TD class=tableDivider colSpan=<?php $FG_TOTAL_TABLE_COL+1; ?>><IMG height=1 
-                              src="images/clear.gif" 
-                              width=1></TD>
-							 
-                </TR>
-				<TR> 
-                  <TD class=tableDivider align=right colSpan=<?php echo $FG_TOTAL_TABLE_COL+1; ?>>
-				  </TD>
-				  
-                </TR>
-              </TBODY>
-            </TABLE></td>
-        </tr>
-        <TR bgcolor="#ffffff"> 
-          <TD bgColor=#ADBEDE height=16 style="PADDING-LEFT: 5px; PADDING-RIGHT: 3px"> 
-			<TABLE border=0 cellPadding=0 cellSpacing=0 width="100%">
-              <TBODY>
-                <TR> 
-                  <TD align="right"><SPAN style="COLOR: #ffffff; FONT-SIZE: 11px"><B> 				  
-        <?php if ($current_page>0) { 
-	$prev_page = $current_page - 1;
-	?>
-                    <img src="images/fleche-g.gif" width="5" height="10"> <a href="<?php echo "$_SERVER[PHP_SELF]?s=1&t=0&order=$order&view=$view&sens=$sens&current_page=" . $prev_page ."&confno=$confno\">"; 
-			?> 
-                    <?php print _("Previous"); ?> </a> - 
-                    <?php 
-			}
-			echo ($current_page+1) ." / " . $nb_record_max; 
-			if ($current_page<$nb_record_max-1)
-			{
-				$next_page = $current_page+1;
-				echo " <a href=\"$_SERVER[PHP_SELF]?s=2&t=2&order=$order&view=$view&sens=$sens&current_page=" . $next_page;
-				echo "&confno=$confno\">";
-		    ?> 
-                    <?php print _("Next"); ?> </a> <img src="images/fleche-d.gif" width="5" height="10"> 
-                    </B></SPAN> 
+                                        <TD align="<?php echo $FG_TABLE_COL[$i][2]; ?>"><?php echo stripslashes($record_display); ?></TD>
+				<?php } ?><?php } ?></TD></TR>
+				<?php } }else { echo "No data found!!!"; } ?>
+              </TBODY></TABLE>
+          <div class="listheader bbl bbr footer">
+                    <?php if ($current_page>0){?>
+		    <span title="First page">
+		    <a class="NP" href="javascript:void(0)" onclick="dynamicLoad ('#updateResult', '<?php echo $_SERVER['PHP_SELF']."?s=1&t=0&view=$orig_view&order=$order&sens=$sens&current_page=0"; ?><?php if (isset ($confno)) echo "&confno=$confno";?>')">&lt;&lt;&nbsp;</a></span>
+		    <span title="Previous page">
+		    <a class="NP" href="javascript:void(0)" onclick="dynamicLoad ('#updateResult', '<?php echo $_SERVER['PHP_SELF']."?s=1&t=0&view=$orig_view&order=$order&sens=$sens&current_page=" . ($current_page-1); ?><?php if (isset ($confno)) echo "&confno=$confno";?>')">&lt;&nbsp;</a></span>
+                    <?php }?>
+		    <?php if ($nb_record_max > 1) { ?>
+                    Page <?php echo ($current_page+1) . " of " . $nb_record_max; } ?> 
+                    <?php if ($current_page<$nb_record_max-1){?>
+		    <span title="Next page">
+                    <a class="NP" href="javascript:void(0)" onclick="dynamicLoad ('#updateResult', '<?php echo $_SERVER['PHP_SELF']?>?s=1&t=0&view=<?php echo $orig_view?>&order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo ($current_page+1)?><?php if (isset ($confno)) echo "&confno=$confno";?>')">&nbsp;&gt;&nbsp;</a></span>
+		    <span title="Last page">
+                    <a class="NP" href="javascript:void(0)" onclick="dynamicLoad ('#updateResult', '<?php echo $_SERVER['PHP_SELF']?>?s=1&t=0&view=<?php echo $orig_view?>&order=<?php echo $order?>&sens=<?php echo $sens?>&current_page=<?php echo $nb_record_max-1?><?php if (isset ($confno)) echo "&confno=$confno";?>')">&gt;&gt;</a></span>
                     <?php } ?>
-                  </TD>
-              </TBODY>
-            </TABLE></TD>
-        </TR>
-      </table>
-
-                  
+                  &nbsp;
+</div>
+</div>
 <?php 
-} else {
-	echo _("No conferences found") ;
-}
-?>
-</center>
-
-</td></tr></tbody></table>
-</center>
-<br></br>&nbsp;&nbsp;
-<br></br>&nbsp;&nbsp;
-
-		<!-- END -->
-	</body>
+} else { ?>
+<center><h1>No conferences <?php echo $view == 'Current' ? 'currently active' : 'found'?>.</h1></center>
+<?php } ?>
+</body>
 </html>

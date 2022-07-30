@@ -1,16 +1,27 @@
 <?php
+$locale = 'en_US';
 
-putenv("LANG=ru_RU");
-$locale = 'ru_RU';
+if (!array_key_exists ('HTTP_ACCEPT_LANGUAGE', $_SERVER))
+  return;
 
-setlocale(LC_ALL, $locale);
+$languages = ($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+$languages = str_replace (' ', '', $languages);
+$languages = str_replace ('-', '_', $languages);
+$languages = explode (',', $languages);
 
-// Specify location of translation tables
-bindtextdomain("messages", "./locale");
+foreach ($languages as $temp)
+{
+  $temp = substr ($temp, 0, 5);
+  $trans = "locale/$temp/LC_MESSAGES/messages.mo";
 
-// Choose domain
-textdomain("messages");
+  if ($temp == 'en_us' || file_exists ($trans))
+    {
+      $locale = $temp;
+      break;
+    }
+}
 
-bind_textdomain_codeset("messages", 'UTF-8');
-
+setlocale (LC_ALL, $locale);
+bindtextdomain ('messages', './locale');
+textdomain ('messages');
 ?>

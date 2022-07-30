@@ -1,146 +1,97 @@
 <?php
 
-include(dirname(__FILE__)."/../locale.php");
-
-//To debug uncomment the following
-//ini_set('display_errors', TRUE);
-//error_reporting(E_ALL ^ E_NOTICE);
-
-//The AJAX features require a consistent URL
-//Make sure to set WEBROOT to the exact URL
-//Users will use to access WMM
-define ("WEBROOT", "/meet1/");
-define ("FSROOT", "/var/www/html/meet1/");
-define ("LIBDIR", FSROOT."lib/");
+define ('FSROOT', '/var/www/html/web-meetme/');
+define ('LIBDIR', FSROOT . 'lib/');
 
 //GUI title
-define("GUI_TITLE", "Web-MeetMe");
-define("GUI_ICON", "asterisk.gif");
-define("GUI_VER", "4.0.4");
-define("GUI_SRC", "http://sourceforge.net/projects/web-meetme/");
+define ('GUI_TITLE', 'XXXX');
+define ('GUI_ICON', 'adacore_logo.gif');
 
-//Email Variables - Support contacts, Call in numbers and other spit and polish for the about page.
-define("LOCAL_SUPPORT", "Support Department");
-define("LOCAL_PHONE", "8(495)--");
-define("PHONENUM", "8(495)--");
-define("PBX_ICON", "asterisk.gif");
+$dialin_numbers = array ('US direct' => 'xxx'
+			 'France direct' => 'xxx',
+			 'UK direct' => 'xxx',
+			 'Japan direct' => 'xxx',
+			 'US toll-free' => 'xxx',
+			 'Japan toll-free' => 'xxx',
+			 'German toll-free' => 'xxx',
+			 'extension' => '200');
+define ('PBX_ICON', 'adacore_logo.gif');
+define ('TIMEZONE', 'America/New_York');
+define ('HOST_FOR_URL', 'asterisk.gnat.com');
 
-//Maximum concurrent caller limit
-//define("MAX_CALLER_LIMT", "9");
-
-// Conference monitor options
-define("MON_REFRESH", "5");
-
-// Recording path
-define("RECORDING_PATH", "/var/lib/asterisk/sounds/conf-recordings/meet1/");
-
-// THIS VARIABLE DEFINE THE COLOR OF THE HEAD TABLE
-$FG_TABLE_HEAD_COLOR = "#D1D9E7";
-$FG_TABLE_EXTERN_COLOR = "#7F99CC"; //#CC0033 (Rouge)
-$FG_TABLE_INTERN_COLOR = "#EDF3FF"; //#FFEAFF (Rose)
-
-$FG_TABLE_ALTERNATE_ROW_COLOR[] = "#1FFFFF";
-$FG_TABLE_ALTERNATE_ROW_COLOR[] = "#F2F8FF";
-
-// THIS VARIABLE DEFINE THE COLOR OF THE ADMIN ROW
-$FG_TABLE_ROW_COLOR_ADMIN = "#FCCDCA";
-
+// Interface to Google Calendar
+define ('GCAL_RESOURCE', 'xxx');
+define ('GCAL_ID', 'xxx');
+define ('GCAL_SECRET', 'xxx');
+define ('GCAL_REFRESH_TOKEN', 'xxx');
 
 // Comment out the following lines to disable authentication
-define ("AUTH_TYPE", "sqldb"); // adLDAP or sqldb 
-define ("ADMIN_GROUP", "Domain Admins");
-define ("AUTH_TIMEOUT", "3");	//Hours
-include (LIBDIR.AUTH_TYPE.".php");
+define ('AUTH_TYPE', 'sqldb'); // adLDAP or sqldb 
+define ('ADMIN_GROUP', 'Domain Admins');
+define ('AUTH_TIMEOUT', '3');	//Hours
+include (LIBDIR.AUTH_TYPE . '.php');
 
+define ('AUTO_CREATE_DOMAIN', 'adacore.com');
+define ('AUTO_CREATE_DOMAIN_FUNCTION', 'ldap_get_email');
+define ('AUTO_CREATE_VALID_GROUP', 'ada');
+define ('AUTO_CREATE_MANAGER_GROUP', 'confmgr');
+define ('AUTO_CREATE_ADMIN_GROUP', 'admin');
 
 //Database tables
-define ("DB_TABLECDR", "cdr");
-define ("DB_TABLESCHED", "booking");
-define ("DB_TABLEUSERS","user");
-
-define ("SERVER_TZ", "PST/PDT");
-define ("USE_24H", "YES");
+define ('DB_TABLECDR', 'cdr');
+define ('DB_TABLESCHED', 'booking');
+define ('DB_TABLEUSERS', 'user');
 
 //Outcall defaults
-//define ("CHAN_TYPE", "Local"); //Use Local to let dialplan decide which chan
-define ("CHAN_TYPE", "SIP"); //Use Local to let dialplan decide which chan
-define ("OUT_PEER", "100"); // Use this if not using CHAN_TYPE Local TRUNK
-//define ("LOCAL_CONTEXT", "meetme_out"); //Select a context to place the call from
-define ("LOCAL_CONTEXT", "default"); //Select a context to place the call from
-define ("OUT_CONTEXT", "meetme"); //Select a context to place the call from
-define ("OUT_CALL_CID", "Meet Admin <7970>"); // Caller ID for Invites ;; Ignore
+define ('CHAN_TYPE', 'Local'); //Use Local to let dialplan decide which chan
+define ('OUT_CONTEXT', 'Call_Conferences'); // Context to place the call from
+define ('OUT_PEER', ''); // Use this if not using CHAN_TYPE Local
+define ('OUT_CALL_CID', 'AdaCore <xxx>'); // Caller ID for Invites
+define ('OUT_CALL_CID_EXT', 'Conferencing <200>'); // Caller ID for Invites
 
 //Standard flags for Users and Admins
-define ("SAFLAGS", "aAsM");
-define ("SUFLAGS", "sM");
-$Mod_Options = array(array(_("Announce"), "I"), array(_("Record"), "r"));
-$User_Options = array(array(_("Announce"), "I"), array(_("Listen Only"), "m"), array(_("Wait for Leader"), "w"));
+define ('SAFLAGS', 'aAosT');
+define ('SUFLAGS', 'osT');
 
-//Require conference PIN (passwords)
-define ("PASSWORD_OPTION", "YES");
+$Conf_Options = array (
+array ('Moderated', 'd', 'All participants are initially muted'),
+array ('Announce', 'I', 'Prompt caller for name and play it when they enter'),
+array ('Count', 'c', 'Announce count of users when entering conference'),
+array ('Quiet', 'q', 'Don\'t play enter and exit sounds'),
+array ('Record', 'r', 'Make recording of conference'));
+
+$User_Options = array (
+array ('Initally Muted', 'm', 'Participants start out muted'),
+array ('Listen Only', 'l', 'Participants can never speak, only listen'),
+array ('Wait for Leader', 'w',
+       'Participants cannot enter conference before leader'));
+
+$Email_Options = array (
+array ('Send', 's', 'Send email to participants', 'toggleEmail'),
+array ('iCal&nbsp;&nbsp;&nbsp;&nbsp;', 'c',
+       'Attach file to enter in iCal-compatible calendar'),
+array ('Extra Text', 't', 'Include additional text', 'toggleMessage'),
+array ('List Participants', 'l', 'Include list of participants in email'));
+
+$Remind_Options = array (
+array ('1 day&nbsp;', 'd', 86400),
+array ('1 hour', 'h', 3600),
+array ('10 minutes', 'm', 600));
 
 //Change conference End Time on a 'End Now' click
-//define ("FORCE_END", "YES");
+define ('FORCE_END', 'YES');
 
-//Mailer type: 
-// CLIENT to use mailto: and default user mail client
-// SERVER to use the server's mailer
-define ("MAILER", "SERVER");
-include ("email_body.php");
+$months = array ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
+		 'Sep', 'Oct', 'Nov', 'Dec');
 
-//Avatar definitions
-$icons_list['0'] = "./images/icons/Darth Vader.GIF"; 
-$icons_list['1'] = "./images/icons/Anakin.GIF";
-$icons_list['2'] = "./images/icons/Scout Trooper.GIF";
-$icons_list['3'] = "./images/icons/Hoth Soldier.GIF";
-$icons_list['4'] = "./images/icons/Major Matt Mason.GIF";
-$icons_list['5'] = "./images/icons/Landspeeder Ben.GIF";
-$icons_list['6'] = "./images/icons/Obi Wan With Hood.GIF";
-$icons_list['7'] = "./images/icons/Wedge.GIF";
-$icons_list['8'] = "./images/icons/Rebel Tech.GIF";
-$icons_list['9'] = "./images/icons/Larry the Lobster.GIF";
+$days = array ('31', '29', '31', '30', '31', '30', '31', '31', '30', '31',
+	       '30', '31');
 
+$recurLabel = array (_('Daily'), _('Weekly'), _('Bi-Weekly'));
+$recurInterval = array ('86400', '604800', '1209600');
 
-
-$months = array(_("January"),_("February"),_("March"),_("April"),_("May"),_("June"),_("July"),_("August"),_("September"),_("October"),_("November"),_("December"));
-
-$days = array("31","28","31","30","31","30","31","31","30","31","30","31");
-
-$recurLabel = array(_("Daily"), _("Weekly"), _("Bi-weekly"));
-$recurInterval = array("86400", "604800", "1209600");
-$recurPeriod = array("14", "26", "13");
-
-function contact(){
-	?>      
-	<table width="90%">
-	<tr><td couluns=2 ><br><h1><?php print _("Support Team"); ?> ...</h1></td></tr>
-	<tr>
-	<td><em><strong>Contact: </strong></em><?php print _("Contact"); ?></td>
-	<td><em><strong>Phone: </strong></em><?php _("Phone"); ?></td>
-	</tr>
-
-	<tr><td span=2 ><br><h2><?php print _("Developer Team"); ?> ...</h2></td></tr>
-	<tr>
-    	<td><a href="mailto:<?=$myemail?>">Arezqui Bela&iuml;d
-      	</a> : areski (no@spam) gmail (dot) com</td>
-    	<td><a href="mailto:dan_austin@phoenix.com">Dan Austin
-      	</a></td>
-  	</tr>
-	<tr>
-	<td><em><strong>Last update: </strong></em><?php  _("Last update"); ?></td>
-	<td><em><strong>Developer Website: </strong></em><a href="<?php _("Developer Website"); ?>">Web-MeetMe</a></td>
-	</tr>
-	<tr>
-	<td><br><img src="images/<?php echo PBX_ICON;?>"></td>
-	<tr>
-	<td><h2>User details ...</h2></td>
-	</tr>
-	<tr>
-	<td> <?php print _("Currently logged on as"); ?> <?php echo $_SESSION['userid']?> a <?php echo $_SESSION['privilege']?> <?php if (isset ($_SESSION['groups'])) print _("and a member of"); ?> <?php if (isset ($_SESSION['groups'])) echo $_SESSION['groups']?></td>
-	</tr>
-	</table>
-<br><br>
-	<?php
-}
-
+if (isset ($_COOKIE['tz']))
+  date_default_timezone_set ($_COOKIE['tz']);
+else
+  date_default_timezone_set (TIMEZONE);
 ?>
