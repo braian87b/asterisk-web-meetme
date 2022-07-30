@@ -22,16 +22,15 @@ $FG_TABLE_COL[]=array (_("Conference #"), "confno", "15%", "left", "", "10");
 $FG_TABLE_COL[]=array (_("Conference Name"), "pin", "25%", "left", "", "10");
 $FG_TABLE_COL[]=array (_("Starts"), "starttime", "20%", "left", "SORT", "30");
 $FG_TABLE_COL[]=array (_("Ends"), "endtime", "20%", "left", "", "30");
-$FG_TABLE_COL[]=array (_("Participants"), "maxusers", "10%", "left", "", "4");
+$FG_TABLE_COL[]=array (_("Participants"), "maxUser", "10%", "left", "", "4");
 
 
 
 $FG_TABLE_DEFAULT_ORDER = "starttime";
-//$FG_TABLE_DEFAULT_SENS = "ASC";
-$FG_TABLE_DEFAULT_SENS = "DESC";
+$FG_TABLE_DEFAULT_SENS = "ASC";
 
 // This Variable store the argument for the SQL query
-$FG_QUERY='confno, confDesc, starttime, endtime, maxusers, bookId, pin, confOwner, adminpin, adminopts, opts';
+$FG_QUERY='confno, confDesc, starttime, endtime, maxUser, bookId, pin, confOwner, adminpin, adminopts, opts';
 $CDR_QUERY='bookId';
 
 // The variable LIMITE_DISPLAY define the limit of record to display by page
@@ -262,18 +261,18 @@ if ($FG_DEBUG == 3) echo "<br>Sense clause : $sens";
 			{ 
 		?>
                 <a href="./meetme_control.php?s=1&t=0&confno=<?php
-		echo $recordset[0]; echo "&book=$recordset[5]";?>" target="_top">
+		echo $recordset[0]; ?>" target="_top">
                 <?php echo stripslashes($record_display); ?></a></TD>
                                         <?php } elseif ($view == "Past"){ 
 			if(strchr($adminopts, 'r') && (file_exists(RECORDING_PATH . "meetme-conf-rec-".$recordset[0]."-".$recordset[5].".wav")) )
 			{
 				echo "<a href=\"javascript:;\" onClick=\"window.open('" . str_replace("https", "http", WEBROOT) ."play.php?confno=$recordset[0]&bookId=$recordset[5]', 'newWin', 'toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=350,height=100')\" class=\"image-link\">&nbsp;<img src=\"images/speaker.gif\" alt=\"Play\" border=0 style=\"{text-decoration: none;}\"></a>";
-				echo "<a href=\"javascript:;\" onCLick=\"window.open(' " . WEBROOT ."conf_cdr.php?&bookId=$recordset[5]&confno=$recordset[0]', 'newWin', 'toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=500,height=400')\">";
+				echo "<a href=\"javascript:;\" onCLick=\"window.open(' " . WEBROOT ."/conf_cdr.php?&bookId=$recordset[5]&confno=$recordset[0]', 'newWin', 'toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=500,height=400')\">";
 			}
 			else
 			{
 				echo "<img src=\"images/spacer.gif\" width=\"20\">&nbsp;";
-				echo "<a href=\"javascript:;\" onCLick=\"window.open('" . WEBROOT ."conf_cdr.php?&bookId=$recordset[5]&confno=$recordset[0]', 'newWin', 'toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=500,height=400')\">";
+				echo "<a href=\"javascript:;\" onCLick=\"window.open('" . WEBROOT ."/conf_cdr.php?&bookId=$recordset[5]&confno=$recordset[0]', 'newWin', 'toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=500,height=400')\">";
 			}
 
                  echo " " . stripslashes($record_display); 
@@ -286,8 +285,7 @@ if ($FG_DEBUG == 3) echo "<br>Sense clause : $sens";
 		</TD>
 								 
 				<?php }} elseif (($i == 4) && ($view == "Past")) { 
-					//$CDR_TABLE_CLAUSE = "bookId='$recordset[5]'";
-					$CDR_TABLE_CLAUSE = "userfield='$recordset[5]'";
+					$CDR_TABLE_CLAUSE = "bookId='$recordset[5]'";
                                         $cdr_count = $db->getOne("SELECT COUNT(*) FROM $CDR_TABLE_NAME WHERE $CDR_TABLE_CLAUSE");?>
 
                                  <TD width="<?php echo $FG_TABLE_COL[$i][2]; ?>" vAlign=middle align="<?php echo $FG_TABLE_COL[$i][3]; ?>" class=tableBody><?php echo $cdr_count ?>/<?php echo stripslashes($record_display); ?></TD>

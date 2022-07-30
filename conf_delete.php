@@ -23,13 +23,13 @@ $FG_TABLE_COL[]=array (_("Conference #"), "confno", "15%", "left", "", "10");
 $FG_TABLE_COL[]=array (_("Conference Name"), "pin", "15%", "middle", "", "10");
 $FG_TABLE_COL[]=array (_("Starts"), "starttime", "25%", "middle", "SORT", "30");
 $FG_TABLE_COL[]=array (_("Ends"), "endtime", "25%", "middle", "", "30");
-$FG_TABLE_COL[]=array (_("Participants"), "maxusers", "15%", "", "", "4");
+$FG_TABLE_COL[]=array (_("Participants"), "maxUser", "15%", "", "", "4");
 
 $FG_TABLE_DEFAULT_ORDER = "starttime";
 $FG_TABLE_DEFAULT_SENS = "ASC";
 
 // This Variable store the argument for the SQL query
-$FG_QUERY='confno, confDesc, starttime, endtime, maxusers, bookId';
+$FG_QUERY='confno, confDesc, starttime, endtime, maxUser, bookId';
 
 
 // The variable LIMITE_DISPLAY define the limit of record to display by page
@@ -71,8 +71,7 @@ if (isset($DeleteNow)){
 		$data = array($i);
 		$result = $db->query($query, $data);
 		//Delete the CDR records for this conference
-		//$query = "DELETE FROM $CDR_TABLE_NAME WHERE bookId =?";
-		$query = "DELETE FROM $CDR_TABLE_NAME WHERE userfield =?";
+		$query = "DELETE FROM $CDR_TABLE_NAME WHERE bookId =?";
 		$result = $db->query($query, $data);
 		// Delete the email entries
 		if (defined('AUTH_TYPE') && (AUTH_TYPE == 'sqldb')){

@@ -60,8 +60,7 @@ function wmm_cdr($ecode, $data, $server, $port) {
 	$dur = intval($data[Duration]);
 
 
-       	//$CDR_CLAUSE=" bookId, duration, CIDname, CIDnum";
-       	$CDR_CLAUSE=" userfield, duration, clid, src";
+       	$CDR_CLAUSE=" bookId, duration, CIDname, CIDnum";
        	$param_update = "'$bookId','$dur','$CIDname','$CIDnum'";
 	$query = "INSERT INTO $CDR_TABLE_NAME VALUES ($param_update)";
 	$result = $db->query($query);

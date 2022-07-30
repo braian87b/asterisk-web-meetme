@@ -1,6 +1,6 @@
 <?php
 
-include(dirname(__FILE__)."/../locale.php");
+include("../locale.php");
 
 //To debug uncomment the following
 //ini_set('display_errors', TRUE);
@@ -9,20 +9,20 @@ include(dirname(__FILE__)."/../locale.php");
 //The AJAX features require a consistent URL
 //Make sure to set WEBROOT to the exact URL
 //Users will use to access WMM
-define ("WEBROOT", "/meet1/");
-define ("FSROOT", "/var/www/html/meet1/");
+define ("WEBROOT", "https://dev-asterisk.phoenix.com/web-meetme/");
+define ("FSROOT", "/var/www/html/web-meetme/");
 define ("LIBDIR", FSROOT."lib/");
 
 //GUI title
 define("GUI_TITLE", "Web-MeetMe");
 define("GUI_ICON", "asterisk.gif");
-define("GUI_VER", "4.0.4");
+define("GUI_VER", "4.0.5");
 define("GUI_SRC", "http://sourceforge.net/projects/web-meetme/");
 
 //Email Variables - Support contacts, Call in numbers and other spit and polish for the about page.
 define("LOCAL_SUPPORT", "Support Department");
-define("LOCAL_PHONE", "8(495)--");
-define("PHONENUM", "8(495)--");
+define("LOCAL_PHONE", "800-123-4567");
+define("PHONENUM", "800-858-4032");
 define("PBX_ICON", "asterisk.gif");
 
 //Maximum concurrent caller limit
@@ -32,7 +32,7 @@ define("PBX_ICON", "asterisk.gif");
 define("MON_REFRESH", "5");
 
 // Recording path
-define("RECORDING_PATH", "/var/lib/asterisk/sounds/conf-recordings/meet1/");
+define("RECORDING_PATH", "/var/lib/asterisk/sounds/conf-recordings/");
 
 // THIS VARIABLE DEFINE THE COLOR OF THE HEAD TABLE
 $FG_TABLE_HEAD_COLOR = "#D1D9E7";
@@ -47,7 +47,7 @@ $FG_TABLE_ROW_COLOR_ADMIN = "#FCCDCA";
 
 
 // Comment out the following lines to disable authentication
-define ("AUTH_TYPE", "sqldb"); // adLDAP or sqldb 
+define ("AUTH_TYPE", "adLDAP"); // adLDAP or sqldb 
 define ("ADMIN_GROUP", "Domain Admins");
 define ("AUTH_TIMEOUT", "3");	//Hours
 include (LIBDIR.AUTH_TYPE.".php");
@@ -59,25 +59,22 @@ define ("DB_TABLESCHED", "booking");
 define ("DB_TABLEUSERS","user");
 
 define ("SERVER_TZ", "PST/PDT");
-define ("USE_24H", "YES");
+//define ("USE_24H", "YES");
 
 //Outcall defaults
-//define ("CHAN_TYPE", "Local"); //Use Local to let dialplan decide which chan
-define ("CHAN_TYPE", "SIP"); //Use Local to let dialplan decide which chan
-define ("OUT_PEER", "100"); // Use this if not using CHAN_TYPE Local TRUNK
-//define ("LOCAL_CONTEXT", "meetme_out"); //Select a context to place the call from
-define ("LOCAL_CONTEXT", "default"); //Select a context to place the call from
-define ("OUT_CONTEXT", "meetme"); //Select a context to place the call from
-define ("OUT_CALL_CID", "Meet Admin <7970>"); // Caller ID for Invites ;; Ignore
+define ("CHAN_TYPE", "Local"); //Use Local to let dialplan decide which chan
+define ("OUT_CONTEXT", "default"); //Select a context to place the call from
+define ("OUT_PEER", ""); // Use this if not using CHAN_TYPE Local
+define ("OUT_CALL_CID", "Parlez <1996>"); // Caller ID for Invites
 
 //Standard flags for Users and Admins
-define ("SAFLAGS", "aAsM");
-define ("SUFLAGS", "sM");
+define ("SAFLAGS", "aAs");
+define ("SUFLAGS", "s");
 $Mod_Options = array(array(_("Announce"), "I"), array(_("Record"), "r"));
 $User_Options = array(array(_("Announce"), "I"), array(_("Listen Only"), "m"), array(_("Wait for Leader"), "w"));
 
 //Require conference PIN (passwords)
-define ("PASSWORD_OPTION", "YES");
+define ("PASSWORD_OPTION", "NO");
 
 //Change conference End Time on a 'End Now' click
 //define ("FORCE_END", "YES");
@@ -85,7 +82,7 @@ define ("PASSWORD_OPTION", "YES");
 //Mailer type: 
 // CLIENT to use mailto: and default user mail client
 // SERVER to use the server's mailer
-define ("MAILER", "SERVER");
+define ("MAILER", "CLIENT");
 include ("email_body.php");
 
 //Avatar definitions
@@ -131,7 +128,7 @@ function contact(){
 	<td><em><strong>Developer Website: </strong></em><a href="<?php _("Developer Website"); ?>">Web-MeetMe</a></td>
 	</tr>
 	<tr>
-	<td><br><img src="images/<?php echo PBX_ICON;?>"></td>
+	<td><br><img src="images/<?=PBX_ICON?>"></td>
 	<tr>
 	<td><h2>User details ...</h2></td>
 	</tr>
@@ -140,7 +137,7 @@ function contact(){
 	</tr>
 	</table>
 <br><br>
-	<?php
+	<?
 }
 
 ?>

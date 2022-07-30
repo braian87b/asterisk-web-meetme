@@ -3,7 +3,6 @@ include (dirname(__FILE__)."/phpagi/phpagi-asmanager.php");
 include ("./lib/defines.php");
 include ("./lib/functions.php");
 include ("./lib/database.php");
-include ("./locale.php");
 
 session_start(); 
 getpost_ifset(array('confno','action','user_id'));
@@ -17,10 +16,10 @@ $FG_DEBUG = 0;
 $FG_TABLE_COL = array();
 
 
-$FG_TABLE_COL[]=array (_("ID"), "user_id", "5%", "center", "", "10");
-$FG_TABLE_COL[]=array (_("CallerId"), "callerid", "50%", "center", "", "80");
+$FG_TABLE_COL[]=array (_("ID"), "user_id", "12%", "center", "", "19");
+$FG_TABLE_COL[]=array (_("CallerId"), "callerid", "40%", "center", "", "30");
 $FG_TABLE_COL[]=array (_("Duration"), "duration", "12%", "center", "", "30");
-$FG_TABLE_COL[]=array (_("Mode"), "mode", "10%", "center", "", "30");
+$FG_TABLE_COL[]=array (_("Mode"), "mode", "12%", "center", "", "30");
 
 
 
@@ -86,7 +85,7 @@ if (isset($confno)){
         if ($showConference==1) {
                 // Conference exists and user is owner -> get Data	
 		$res = $as->Command('meetme list '.$confno.' concise');
-		$line= explode("\n", $res['data']);
+		$line= split("\n", $res['data']);
 	
 		$nbuser=0;
 		foreach ($line as $myline){
@@ -94,31 +93,29 @@ if (isset($confno)){
 			if (is_numeric($linevalue[0])){
 			    $meetmechannel [$nbuser][0] = $linevalue[0];
 			    if ( $linevalue[1] == $linevalue[2] ){
-				     $meetmechannel [$nbuser][1] = "Без имени &lt;".$linevalue[1]."&gt;";
+				     $meetmechannel [$nbuser][1] = _("Unknown ").$linevalue[1];
 			    } else {
-				      $meetmechannel [$nbuser][1] = $linevalue[2]." &lt;".$linevalue[1]."&gt;";
+				      $meetmechannel [$nbuser][1] = $linevalue[1]." ".$linevalue[2];
 			    }
 
 			    $meetmechannel [$nbuser][2] = $linevalue[9];
-			    $meetmechannel [$nbuser][5] = $linevalue[3];
 
 			    if ($linevalue[6]=="") 
-				if ($linevalue[8]=="1")// || $linevalue[8]=="-1")
-					$meetmechannel [$nbuser][3] = "Talking";
+				if ($linevalue[8]=="1")
+					$meetmechannel [$nbuser][3] = _("Talking");
 				else
-					$meetmechannel [$nbuser][3] = "UnMuted";
+					$meetmechannel [$nbuser][3] = _("UnMuted");
 			    else 
 				if ($linevalue[7]=="")
-					$meetmechannel [$nbuser][3] = "Muted";
+						$meetmechannel [$nbuser][3] = _("Muted");
 				else
-					$meetmechannel [$nbuser][3] = "Requests Floor";
+					$meetmechannel [$nbuser][3] = _("Requests Floor");
 			
-			    if ($linevalue[4]=="") $meetmechannel [$nbuser][4] = "User";
-			    else $meetmechannel [$nbuser][4] = "Admin";			
+			    if ($linevalue[4]=="") $meetmechannel [$nbuser][4] = _("User");
+			    else $meetmechannel [$nbuser][4] = _("Admin");			
 			    $nbuser++;
 		    }
 		}
-		//sleep (0.5);
 	}	
 		
     /*  Concise MeetMe List output
@@ -130,7 +127,7 @@ if (isset($confno)){
     [5] => 1 for Monitor, Null otherwise
     [6] => 1 for Muted, NULL for UnMuted
     [7] => 1 for Resquests Floor, 0 otherwise
-    [8] => 1 for 'Is Talking', 0 otherwise, -1 for ?
+    [8] => 1 for 'Is Talking', 0 otherwise
     [9] => Call duration
     */	
 	$as->disconnect();
@@ -290,20 +287,8 @@ if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
 	    	             <TD>
 					<?php if (($FG_VOICE_RIGHT || $FG_KICKOUT )){ ?>
 						 <?php if ($FG_VOICE_RIGHT){ ?>
-							
-							<a href="#" onClick="conf_action('1','1','1','<?PHP echo $recordset[5]; ?>','rxdec')">[RX-]</a>
-							-
-							<a href="#" onClick="conf_action('1','1','1','<?PHP echo $recordset[5]; ?>','rxinc')">[RX+]</a>
-							-
-							<a href="#" onClick="conf_rxtxcurent('<?PHP echo $recordset[5]; ?>','rxcurrent')">[RX?]</a>
-							<br>
-							<a href="#" onClick="conf_action('1','1','1','<?PHP echo $recordset[5]; ?>','txdec')">[TX-]</a>
-							-
-							<a href="#" onClick="conf_action('1','1','1','<?PHP echo $recordset[5]; ?>','txinc')">[TX+]</a>
-							-
-							<a href="#" onClick="conf_rxtxcurent('<?PHP echo $recordset[5]; ?>','txcurrent')">[TX?]</a>
-							<br>
-							<?php if ($recordset[3]=='Muted' || $recordset[3]=='Requests Floor'){ ?>
+						 
+						 	<?php if ($recordset[3]=='Muted' || $recordset[3]=='Requests Floor'){ ?>
 							 <a href="#" onClick="conf_action('unmute','<?PHP echo $confno; ?>','<?PHP echo intval($recordset[0]); ?>')">[UNMUTE]</a>
 							<?php }else{ ?>
 							 <a href="#" onClick="conf_action('mute','<?PHP echo $confno; ?>','<?PHP echo intval($recordset[0]); ?>'); ">[MUTE]</a>

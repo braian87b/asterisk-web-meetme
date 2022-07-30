@@ -52,7 +52,6 @@ function  checkEmail($email) {
 class userSec {
 
 	function authenticate($user,$password){
-		$user = strtolower($user);
 		switch (AUTH_TYPE) {
 			case "adLDAP":
                 		$adldap = new adLDAP();
@@ -106,44 +105,4 @@ function use24h(){
                 return 1;
 	}
 }
-
-function stran ($numrows,$colprod,$of,$url) {
-        if ($numrows > $colprod ) {
-                //$numrows=$r[0];
-                $str = $numrows / $colprod;
-                $str = (int)$str;
-                if ($str<$numrows/$colprod) $str++;
-                if (1 < $numrows/$colprod) {
-                $stran = "<center>";
-                 $i=0;
-                 while ($i<$str)
-                  {
-                   $nach_temp=$i*$colprod;
-                   $i++;
-                     if ($nach_temp<>$of)
-                          {
-                           $stran .= "<a href=\"".$url."".$nach_temp."\">$i</a>&nbsp; ";
-                          }
-                          else
-                          {
-                           $stran .= "<b><font color=RED>$i</font>&nbsp; </b>";
-                          }
-                  }
-                }
-                  $stran .= "</center>";
-                  return $stran;
-        }
-}
-
-function translit($text) {
-    $trans = array("а"=>"a","б"=>"b","в"=>"v","г"=>"g","д"=>"d","е"=>"e", "ё"=>"yo","ж"=>"j","з"=>"z","и"=>"i","й"=>"y", "і"=>"i", "є"=>"ye",
-    "к"=>"k","л"=>"l", "м"=>"m","н"=>"n","о"=>"o","п"=>"p","р"=>"r","с"=>"s","т"=>"t", "у"=>"y","ф"=>"f","х"=>"h",
-    "ц"=>"c","ч"=>"ch", "ш"=>"sh","щ"=>"sh","ы"=>"i","э"=>"e","ю"=>"u","я"=>"ya", "А"=>"A","Б"=>"B","В"=>"V",
-    "Г"=>"G","Д"=>"D","Е"=>"E", "Ё"=>"Yo","Ж"=>"J","З"=>"Z","И"=>"I","Й"=>"Y","К"=>"K", "Л"=>"L","М"=>"M","Н"=>"N", "І", "Є"=>"Ye",
-    "О"=>"O","П"=>"P", "Р"=>"R","С"=>"S","Т"=>"T","У"=>"Y","Ф"=>"F", "Х"=>"H","Ц"=>"C","Ч"=>"Ch","Ш"=>"Sh","Щ"=>"Sh",
-    "Ы"=>"I","Э"=>"E","Ю"=>"U","Я"=>"Ya", "ь"=>"","Ь"=>"","ъ"=>"","Ъ"=>"");
-    $text = strtr($text, $trans);
-    return $text;
-}
-
 ?>

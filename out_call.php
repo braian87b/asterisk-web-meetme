@@ -1,9 +1,9 @@
 <?php
 include ("./lib/defines.php");
 include ("./lib/functions.php");
-//include ("locale.php");
+include ("locale.php");
 
-getpost_ifset(array('confno','book'));
+getpost_ifset ('confno');
 
 ?>
 
@@ -11,8 +11,8 @@ getpost_ifset(array('confno','book'));
 <html>
 <head>
         <title><?php print GUI_TITLE; ?> <?php print _("control"); ?></title>
-	<!--<meta http-equiv="Content-Type" content="text/html">//-->
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="Content-Type" content="text/html">
+
 
         <link rel="stylesheet" type="text/css">
         <style type="text/css" media="screen">
@@ -35,22 +35,16 @@ getpost_ifset(array('confno','book'));
 
 <center>
 
-		Введите имя участника и номер телефона<br>для приглашения в конференцию:
+
+		<?php print _("Outbound Call to invited participant").":"; ?>
+
                 <FORM action="./call_operator.php" method=post name=WMOutCall>
                 <INPUT type="hidden" name="action" value="quickcall">
-                <INPUT type="hidden" name="data" value="<?php echo $confno; ?>">
-                <INPUT type="hidden" name="bookid" value="<?php echo $book; ?>">
-		<table border="0">
-		<tr>
-			<td align="right">Имя: </td><td><INPUT type="text" name="name" value=""></td>
-		</tr>
-		<tr>
-			<td>Телефон: </td><td><INPUT type="text" name="invite_num" value=""></td>
-		</tr>
-		<tr>
-			<td colspan="2" align="center"><input type="submit" value="Вызов"/></td>
-		</tr>
-		</table>
+                <INPUT type="hidden" name="data" value="<?php print $confno; ?>">
+		<?php print _("Telephone #"); ?><INPUT type="text" name="invite_num" value="">
+		<br>
+		<center>
+		<input type="submit" value=<?php print "\""._("CALL")."\""; ?> />
 		<center>
 		</FORM>
 

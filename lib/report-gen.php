@@ -30,8 +30,7 @@ for ($t=0; $t < 24; $t++){
 	$total = $total +  $count[$t];
 
 	while ($rows->fetchInto($result)){
-		//$query = "Select (SUM(duration)/60) AS uMins FROM ".DB_TABLECDR." WHERE bookId = '$result[0]'";
-		$query = "Select (SUM(duration)/60) AS uMins FROM ".DB_TABLECDR." WHERE userfield = '$result[0]'";
+		$query = "Select (SUM(duration)/60) AS uMins FROM ".DB_TABLECDR." WHERE bookId = '$result[0]'";
 		$utemp = $db->query($query);
 		$utemp2 = $utemp->fetchRow(DB_FETCHMODE_ASSOC);
 		if ($utemp2['uMins'])
@@ -91,7 +90,7 @@ if ($max > 0){
         	$hpos += 24;
 	}
 } else {
-	imagestring($im, 10, ($im_width/3), ($im_height/2), _("No Conferences Scheduled"), $red);
+	imagestring($im, 10, ($im_width/3), ($im_height/2), "No Conferences Scheduled ", $red);
 }
 imagepng($im);
 imagedestroy($im);

@@ -129,7 +129,6 @@
         $req .= "$var: $val\r\n";
       $req .= "\r\n";
       fwrite($this->socket, $req);
-      //echo "<pre>$req</pre>";
       return $this->wait_response();
     }
 
@@ -437,7 +436,7 @@
     * @param string $application
     * @param string $data
     */
-    function Originate($channel, $exten, $context, $priority, $timeout, $callerid, $variable, $account, $application, $data, $async)
+    function Originate($channel, $exten, $context, $priority, $timeout, $callerid, $variable, $account, $application, $data)
     {
       $parameters = array();
       if($channel) $parameters['Channel'] = $channel;
@@ -450,7 +449,6 @@
       if($account) $parameters['Account'] = $account;
       if($application) $parameters['Application'] = $application;
       if($data) $parameters['Data'] = $data;
-      if($async) $parameters['Async'] = $async;
       return $this->send_request('Originate', $parameters);
     }	
 

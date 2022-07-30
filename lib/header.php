@@ -3,7 +3,7 @@ $gui_title = GUI_TITLE;
 $gui_icon = GUI_ICON;
 $array = array (
 	_("Information"), 
-	"Адресная книга", 
+	"" => array(), 
 	_("Scheduling") => array(
 		_("Add Conference"),
 		_("Delete Conferences"), 
@@ -53,16 +53,15 @@ if($section != "section99" || ((count($_SESSION) > 1) && $s == $logoff_sel) || $
 {
 	$section="section$s$t";
 }
-//print_r ($array);
-$racine="/meet1/meetme_control.php";
+
+$racine="/web-meetme/meetme_control.php";
 $update = "21 March 2005";
 print <<<HEADER
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
         <head>
                 <title>$gui_title control</title>
-                <!--<meta http-equiv="Content-Type" content="text/html">//-->
-                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                <meta http-equiv="Content-Type" content="text/html">
                 <style type="text/css" media="screen">
                         @import url("css/layout.css");
                         @import url("css/content.css");

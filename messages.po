@@ -1,751 +1,754 @@
-# Web-meetme-4.0.1 russian translation
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Aidar Kamalov <aidar.kamalov@gmail.com>, 2010
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.9\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-01 21:17+0300\n"
-"PO-Revision-Date: 2010-07-01 21:17+0300\n"
-"Last-Translator: Aidar Kamalov <aidar.kamalov@gmail.com>\n"
-"Language-Team: Russian <LL@li.org>\n"
+"POT-Creation-Date: 2009-03-20 21:05+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: about.php:25 conf_delete.php:147 daily.php:12 out_call.php:13
 #: user_add_sqldb.php:123 user_edit_sqldb.php:92
 msgid "control"
-msgstr "контроль"
+msgstr ""
 
 #: about.php:46
 msgid "Control"
-msgstr "Control"
+msgstr ""
 
 #: about.php:55
 msgid "Site Navigation:"
-msgstr "Навигация по сайту:"
+msgstr ""
 
 #: about.php:119
 msgid "<b>C</b>ontrol</center>"
-msgstr "<b>К</b>онтроль</center>"
+msgstr ""
 
 #: about.php:121
 msgid "Intro-Text"
-msgstr "Intro-Text"
+msgstr ""
 
 #: about.php:184
 msgid "Screen-shot"
-msgstr "Скриншоты"
+msgstr ""
 
 #: about.php:194
 msgid "Developer team ..."
-msgstr "Команда разработчиков..."
+msgstr ""
 
 #: about.php:203
 msgid "Click to email me"
-msgstr "Нажмите для сообщения для меня"
+msgstr ""
 
 #: about.php:209
 msgid "Last update:"
-msgstr "Последнее обновление:"
+msgstr ""
 
 #: about.php:213
 msgid "Coming soon ..."
-msgstr "Скоро будет..."
+msgstr ""
 
 #: call_operator.php:75 conf_async.php:84
 msgid "Error connection to the manager!"
-msgstr "ошибка подключения к Asterisk manager!"
+msgstr ""
 
 #: call_operator.php:139
 msgid "Call Placed"
-msgstr "Вызов установлен"
+msgstr ""
 
 #: call_operator.php:141
 msgid "System error, try again later"
-msgstr "Системная ошибка, попробуйте еще раз"
+msgstr ""
 
 #: call_operator.php:158
 msgid "CHANNEL"
-msgstr "КАНАЛ"
+msgstr ""
 
 #: call_operator.php:167
 msgid "EXTEN"
-msgstr "ЭКСТЕНШЕН"
+msgstr ""
 
 #: call_operator.php:176
 msgid "CONTEXT"
-msgstr "КОНТЕКСТ"
+msgstr ""
 
 #: call_operator.php:185
 msgid "PRIORITY"
-msgstr "ПРИОРИТЕТ"
+msgstr ""
 
 #: call_operator.php:194
 msgid "TIMEOUT"
-msgstr "ТАЙМАУТ"
+msgstr ""
 
 #: call_operator.php:202
 msgid "CALLERID"
-msgstr "CALLERID"
+msgstr ""
 
 #: call_operator.php:210
 msgid "VARIABLE"
-msgstr "VARIABLE"
+msgstr ""
 
 #: call_operator.php:218
 msgid "ACCOUNT"
-msgstr "АККАУНТ"
+msgstr ""
 
 #: call_operator.php:226
 msgid "APPLICATION"
-msgstr "ПРИЛОЖЕНИЕ"
+msgstr ""
 
 #: call_operator.php:234
 msgid "DATA"
-msgstr "ДАТА (Данные?)"
+msgstr ""
 
 #: conf_actions.php:26
 msgid "'Error connection to the manager!'"
-msgstr "Ошибка подключения к Asterisk manager"
+msgstr ""
 
 #: conf_add.php:54
 msgid " - Scheduled Conferences : - "
-msgstr " - Назначенные конференции : - "
+msgstr ""
 
 #: conf_add.php:59
 msgid "<br>Table : "
-msgstr "<br>Таблица : "
+msgstr ""
 
 #: conf_add.php:59
 msgid "  \t- \tCol_query : "
-msgstr "  \t- \tЗапрос_столбца : "
+msgstr ""
 
 #: conf_add.php:94
 msgid "A conference number must be numeric."
-msgstr "Номер конференции должен состоять только из цифр"
+msgstr ""
 
 #: conf_add.php:136 conf_add.php:140 conf_add.php:142 conf_add.php:363
 #: conf_add.php:367 conf_add.php:369
 msgid "Conference PINs must be numeric only"
-msgstr "Пин-код должен состоять только из цифр"
+msgstr ""
 
 #: conf_add.php:144 conf_add.php:371
 msgid "Moderator and user PINs must not be equal"
-msgstr "Пин-коды модератора и пользователя не должны совпадать"
+msgstr ""
 
 #: conf_add.php:146 conf_add.php:373
 msgid "Moderator PIN required if  'Wait for Leader is set'"
-msgstr "Необходим пин-код модератора, если включен режим 'Ждать владельца'"
+msgstr ""
 
 #: conf_add.php:150 conf_add.php:377
 msgid "You must reserve at least 2 seats in this conference"
-msgstr "Вы должны зарезервировать хотя бы два места в конференции"
+msgstr ""
 
 #: conf_add.php:186 conf_add.php:411
 msgid ""
 "Your conference is not unique.  Please a different start time or conference "
 "ID"
-msgstr "Ваша конференция не уникальная. Пожалуйста выберите другое время или номер конференции"
+msgstr ""
 
 #: conf_add.php:318
 msgid "Sorry, you are not allowed to  scheduled a conference in the past"
-msgstr "Извините, вы не можете запланировать конференцию в прошлом"
+msgstr ""
 
 #: conf_add.php:540 meetme_control.php:580 lib/header.php:8
 msgid "Add Conference"
-msgstr "Добавить конференцию"
+msgstr ""
 
 #: conf_add.php:563
 msgid "Your Conference Details"
-msgstr "Подробности конференции"
+msgstr ""
 
 #: conf_add.php:621
 msgid "Conference"
-msgstr "Конференция"
+msgstr ""
 
 #: conf_add.php:625
 msgid "Scheduled"
-msgstr "Запланировано"
+msgstr ""
 
 #: conf_add.php:629
 msgid "Updated"
-msgstr "Обновлено"
+msgstr ""
 
 #: conf_add.php:633
 msgid "Send conference call details and the message you enter below"
-msgstr "Отправить подробности конференции и сообщение ниже"
+msgstr ""
 
 #: conf_add.php:638
-msgid "Email Message"
-msgstr "Cообщение"
+msgid "Email Message:"
+msgstr ""
 
 #: conf_add.php:687
-msgid "Conference Not Scheduled"
-msgstr "Конференция не запланирована"
+msgid "Conference Not Scheduled:"
+msgstr ""
 
 #: conf_async.php:94
 msgid ""
 "You are not the owner of this conference or the conference does not exist!"
-msgstr "Вы не член этой конференции или конференции не существует!"
+msgstr ""
 
 #: conf_async.php:109
 msgid "Unknown "
-msgstr "Неизвестно "
+msgstr ""
 
 #: conf_async.php:118
 msgid "Talking"
-msgstr "Говорит"
+msgstr ""
 
 #: conf_async.php:120
 msgid "UnMuted"
-msgstr "Включить микрофон"
+msgstr ""
 
 #: conf_async.php:123
 msgid "Muted"
-msgstr "Отлючить микрофон"
+msgstr ""
 
 #: conf_async.php:125
 msgid "Requests Floor"
-msgstr "Запросить Floor"
+msgstr ""
 
 #: conf_async.php:127
 msgid "User"
-msgstr "Пользователь"
+msgstr ""
 
 #: conf_async.php:128
 msgid "Admin"
-msgstr "Администратор"
+msgstr ""
 
 #: conf_async.php:381 conf_delete.php:339 conf_listen.php:288
 #: conf_update.php:337 user_edit_sqldb.php:239
 msgid "Previous"
-msgstr "Назад"
+msgstr ""
 
 #: conf_async.php:386 conf_delete.php:344 conf_listen.php:297
 #: conf_update.php:347 user_edit_sqldb.php:244
 msgid "Next"
-msgstr "Дальше"
+msgstr ""
 
 #: conf_async.php:395
-msgid "No user in this conference room"
-msgstr "В этой конферении нет участников"
+msgid "No user in this conference room."
+msgstr ""
 
 #: conf_cdr.php:43
 msgid " - Conference Participants"
-msgstr " - Участники конференции"
+msgstr ""
 
 #: conf_cdr.php:193 conf_delete.php:312 user_edit_sqldb.php:213
 msgid "No data found !!!"
-msgstr "Нет данных"
+msgstr ""
 
 #: conf_cdr.php:242
 msgid "No participants found for that conference number"
-msgstr "В этой конферении нет участников"
+msgstr ""
 
 #: conf_control.php:7
 msgid "Asterisk Queue Monitor"
-msgstr "Монитор очереди"
+msgstr ""
 
 #: conf_delete.php:353
 msgid "Are you sure?"
-msgstr "Вы уверены?"
+msgstr ""
 
 #: conf_delete.php:357
 msgid "No conference with that conference number"
-msgstr "Конференции с таким номером не существует"
+msgstr ""
 
 #: conf_delete.php:46
 msgid " - Scheduled Conference)"
-msgstr " - Запланированные конференции)"
+msgstr ""
 
 #: conf_listen.php:47 conf_update.php:48
 msgid "Scheduled Conference"
-msgstr "Запланированные конференции"
+msgstr ""
 
 #: conf_listen.php:309
 msgid "No recorded conference found with that conference number and pin"
-msgstr "Записанных конференция с таким номером и пин-кодом не найдено"
+msgstr ""
 
 #: conf_update.php:359
 msgid "No conferences found"
-msgstr "Конференции не найдены"
+msgstr ""
 
 #: daily.php:73
 msgid "Total Conferences Scheduled and used on"
-msgstr "Всего запланированных конференций"
+msgstr ""
 
 #: email_participants.php:16
 msgid "Admin Password"
-msgstr "Пароль администратора"
+msgstr ""
 
 #: email_participants.php:17
 msgid "has invited you to the following conference call"
-msgstr "пригласил вас в конференцию"
+msgstr ""
+
+#: email_participants.php:18 lib/email_body.php:20 lib/email_body.php:36
+msgid "Conference Name"
+msgstr ""
 
 #: email_participants.php:19 meetme_control.php:303
 msgid "Conference Number"
-msgstr "Номер конференции"
+msgstr ""
 
 #: email_participants.php:21 lib/email_body.php:23 lib/email_body.php:39
 msgid "Conference Password"
-msgstr "Пароль конференции"
+msgstr ""
 
 #: email_participants.php:22 lib/email_body.php:24 lib/email_body.php:40
 msgid "Start Date and Time"
-msgstr "Дата и время начала"
+msgstr ""
 
 #: email_participants.php:23 lib/email_body.php:25 lib/email_body.php:41
 msgid "End Date and Time"
-msgstr "Дата и время окончания"
+msgstr ""
 
 #: email_participants.php:24 lib/email_body.php:26 lib/email_body.php:42
 msgid "Participants"
-msgstr "Участники"
+msgstr ""
 
 #: email_participants.php:26 lib/email_body.php:29 lib/email_body.php:45
 msgid "Dial In Info"
-msgstr "Информация по подключению"
+msgstr ""
 
 #: email_participants.php:27
 msgid "You will then prompted for the conference and pin numbers"
-msgstr "You will then prompted for the conference and pin numbers (!!!)"
+msgstr ""
 
 #: email_participants.php:30
 msgid "This conference will be recorded. After the conference is complete"
-msgstr "Эта конференция будет записана. После окончания конференции"
+msgstr ""
 
 #: email_participants.php:31
 msgid "you may listen to the recording by"
-msgstr "вы можете прослушать запись"
+msgstr ""
 
 #: email_participants.php:32
 msgid "Click"
-msgstr "Перейдя по ссылке"
+msgstr ""
 
 #: email_participants.php:37
 msgid "Administrator"
-msgstr "Администратор"
+msgstr ""
 
 #: email_participants.php:47
 msgid "Conference Call"
-msgstr "Вызов в конференцию"
+msgstr ""
 
 #: email_participants.php:49
 msgid "The following message has been sent to all invited participants"
-msgstr "Следующее сообщение будет послано всем приглашенным участникам"
+msgstr ""
 
 #: listen.php:41
-msgid "Please enter the conference number and pin"
-msgstr "Пожалуйста введите номер конференции и пин-код"
-
-msgid "Listen to previously recorded conferences"
-msgstr "Прослушивание ранее записанной конференции"
+msgid "Please enter the conference number and pin:"
+msgstr ""
 
 #: listen.php:48
 msgid "Conference #"
-msgstr "Конференция #"
+msgstr ""
 
 #: listen.php:55
 msgid "Pin"
-msgstr "Пин-код"
+msgstr ""
 
 #: meetme_control.php:72
 msgid "<b>C</b>ontrol"
-msgstr "<b>К</b>онтроль"
+msgstr ""
 
 #: meetme_control.php:74
 msgid "Introtext_meetme"
-msgstr "Introtext_meetme"
+msgstr ""
 
 #: meetme_control.php:113 meetme_control.php:646
 msgid "Select the room number that you want to handle"
-msgstr "Выберите комнату конференции, которой вы хотите управлять"
+msgstr ""
 
 #: meetme_control.php:120 meetme_control.php:653
 msgid "Conference ROOM"
-msgstr "Комната конференции"
+msgstr ""
 
 #: meetme_control.php:258
 msgid "Change details about this conference"
-msgstr "Измените данные конференции"
+msgstr ""
 
 #: meetme_control.php:274
 msgid "Enter the details about the conference to add"
-msgstr "Введите данные конференции"
+msgstr ""
 
 #: meetme_control.php:285
-msgid "Conference Name"
-msgstr "Название конференции"
+msgid "Conference Name :"
+msgstr ""
 
 #: meetme_control.php:292
-msgid "Conference Owner"
-msgstr "Владелец конференции"
+msgid "Conference Owner :"
+msgstr ""
 
 #: meetme_control.php:310
 msgid "Moderator PIN"
-msgstr "ПИН код модератора"
+msgstr ""
 
 #: meetme_control.php:318
 msgid "Moderator Options"
-msgstr "Опции модератора"
+msgstr ""
 
 #: meetme_control.php:353
 msgid "No Passwords"
-msgstr "Без пароля"
+msgstr ""
 
 #: meetme_control.php:362
 msgid "User PIN"
-msgstr "ПИН пользователя"
+msgstr ""
 
 #: meetme_control.php:407
 msgid "Start Time"
-msgstr "Начало"
+msgstr ""
 
 #: meetme_control.php:494
 msgid "Duration"
-msgstr "Длительность"
+msgstr ""
 
 #: meetme_control.php:507
 msgid "Reoccurs"
-msgstr "Повторы"
+msgstr ""
 
 #: meetme_control.php:514
 msgid "for"
-msgstr "для"
+msgstr ""
 
 #: meetme_control.php:525
 msgid "Max Participants"
-msgstr "Макс. кол-во участников"
+msgstr ""
 
 #: meetme_control.php:538
 msgid "Invite"
-msgstr "Вызвать"
+msgstr ""
 
 #: meetme_control.php:542
 msgid "Invite to conference"
-msgstr "Вызвать в конференцию"
+msgstr ""
 
 #: meetme_control.php:577
 msgid "Update the Series"
-msgstr "Обновить ВСЕ"
-
-msgid "User Options"
-msgstr "Опции пользователя"
+msgstr ""
 
 #: meetme_control.php:602
 msgid "Select the Conference that you want to Delete"
-msgstr "Выберите конференцию которую хотите удалить"
+msgstr ""
 
 #: meetme_control.php:686
 msgid "Select the Conference that you want to Review"
-msgstr "Выберите конференцию которую хотите просмотреть"
-
+msgstr ""
 
 #: meetme_control.php:689
 msgid "Select the Conference that you want to Monitor"
-msgstr "Выберите конференцию которую хотите монитроить"
+msgstr ""
 
 #: meetme_control.php:692
 msgid "Select the Conference that you want to Modify"
-msgstr "Выберите конференцию которую хотите изменить"
+msgstr ""
 
 #: meetme_control.php:701
 msgid "Search for Conference"
-msgstr "Поиск конференции"
+msgstr ""
 
 #: meetme_control.php:739 update_user.php:65 user_management.php:7
 msgid "Enter the details about the user to add"
-msgstr "Введите данные о пользователе"
+msgstr ""
 
 #: meetme_control.php:746 update_user.php:74
 msgid "First Name"
-msgstr "Имя"
+msgstr ""
 
 #: meetme_control.php:754 update_user.php:82
 msgid "Last Name"
-msgstr "Фамилия"
+msgstr ""
 
 #: meetme_control.php:763 meetme_control.php:871 update_user.php:91
 #: user_add_sqldb.php:154 user_management.php:30
 msgid "User Email"
-msgstr "Емайл пользователя"
+msgstr ""
 
 #: meetme_control.php:771 update_user.php:99
 msgid "Telephone"
-msgstr "Телефон"
+msgstr ""
 
 #: meetme_control.php:780 meetme_control.php:895 update_user.php:107
 #: user_management.php:22
 msgid "Password"
-msgstr "Пароль"
+msgstr ""
 
 #: meetme_control.php:792
 msgid "Is Admin?"
-msgstr "Администратор?"
+msgstr ""
 
 #: meetme_control.php:795 update_user.php:120
 msgid "No"
-msgstr "Нет"
+msgstr ""
 
 #: meetme_control.php:795 update_user.php:122
 msgid "Yes"
-msgstr "Да"
+msgstr ""
 
 #: meetme_control.php:812 lib/header.php:22
 msgid "Add User"
-msgstr "Добавить пользователя"
+msgstr ""
 
 #: meetme_control.php:836 user_management.php:79
 msgid "Select the user that you want to edit"
-msgstr "Выберите пользователя, которого хотите отредактировать"
+msgstr ""
 
 #: meetme_control.php:848
 msgid "Select the date to view a Report"
-msgstr "Выберите дату для просмотра отчета"
+msgstr ""
 
 #: meetme_control.php:866
 msgid "You have successfully logged off. "
-msgstr "Вы успешно отключились"
+msgstr ""
 
 #: meetme_control.php:875
 msgid "Logon Name"
-msgstr "Логин"
+msgstr ""
 
 #: meetme_control.php:879
 msgid "<b>L</b>ogin"
-msgstr "<b>Л</b>огин"
+msgstr ""
 
 #: meetme_control.php:881
 msgid "Please enter your username and password"
-msgstr "Пожалуйста введите ваш логин и пароль"
+msgstr ""
 
 #: meetme_control.php:895
 msgid "Your password goes here"
-msgstr "Ваш пароль здесь"
+msgstr ""
 
 #: out_call.php:44
 msgid "Telephone #"
-msgstr "Телефон #"
+msgstr ""
 
 #: update_user.php:116 user_add_sqldb.php:155 user_management.php:38
 msgid "Is Admin"
-msgstr "Администратор"
+msgstr ""
 
 #: update_user.php:132 lib/header.php:22 lib/header.php:28
 msgid "Update User"
-msgstr "Изменить пользователя"
+msgstr ""
 
 #: update_user.php:132 update_user.php:133
 msgid "Are you sure"
-msgstr "Вы уверены"
+msgstr ""
 
 #: update_user.php:133
 msgid "Remove User"
-msgstr "Удалить пользователя"
+msgstr ""
 
 #: update_user.php:142
 msgid "You Are not an Administrator of this system"
-msgstr "Вы не администратор"
+msgstr ""
 
 #: user_add_sqldb.php:151
 msgid "User Created"
-msgstr "Пользователь создан"
+msgstr ""
 
 #: user_add_sqldb.php:152 user_management.php:14
 msgid "User Name"
-msgstr "Имя пользователя"
+msgstr ""
 
 #: user_add_sqldb.php:153
 msgid "User Password"
-msgstr "Пароль пользователя"
+msgstr ""
 
 #: user_add_sqldb.php:167
 msgid "User Deleted"
-msgstr "Пользователь удален"
+msgstr ""
 
 #: user_add_sqldb.php:176
 msgid "User Not Created"
-msgstr "Пользователь не создан"
+msgstr ""
 
 #: lib/defines.php:62 lib/defines.php:63
 msgid "Announce"
-msgstr "Анонс"
+msgstr ""
 
 #: lib/defines.php:62
 msgid "Record"
-msgstr "Запись"
+msgstr ""
 
 #: lib/defines.php:63
 msgid "Listen Only"
-msgstr "Только прослушивание"
+msgstr ""
 
 #: lib/defines.php:63
 msgid "Wait for Leader"
-msgstr "Ждать владельца"
+msgstr ""
 
 #: lib/defines.php:91
 msgid "January"
-msgstr "Январь"
+msgstr ""
 
 #: lib/defines.php:91
 msgid "February"
-msgstr "Февраль"
+msgstr ""
 
 #: lib/defines.php:91
 msgid "March"
-msgstr "Март"
+msgstr ""
 
 #: lib/defines.php:91
 msgid "April"
-msgstr "Апрель"
+msgstr ""
 
 #: lib/defines.php:91
 msgid "May"
-msgstr "Май"
+msgstr ""
 
 #: lib/defines.php:91
 msgid "June"
-msgstr "Июнь"
+msgstr ""
 
 #: lib/defines.php:92
 msgid "July"
-msgstr "Июль"
+msgstr ""
 
 #: lib/defines.php:92
 msgid "August"
-msgstr "Август"
+msgstr ""
 
 #: lib/defines.php:92
 msgid "September"
-msgstr "Сентябрь"
+msgstr ""
 
 #: lib/defines.php:92
 msgid "October"
-msgstr "Октябрь"
+msgstr ""
 
 #: lib/defines.php:92
 msgid "November"
-msgstr "Ноябрь"
+msgstr ""
 
 #: lib/defines.php:92
 msgid "December"
-msgstr "Декабрь"
+msgstr ""
 
 #: lib/defines.php:96
 msgid "Daily"
-msgstr "Ежедневно"
+msgstr ""
 
 #: lib/defines.php:96
 msgid "Weekly"
-msgstr "Еженедельно"
+msgstr ""
 
 #: lib/defines.php:96
 msgid "Bi-weekly"
-msgstr "Каждые две недели"
+msgstr ""
 
 #: lib/defines.php:103
 msgid "Support Team"
-msgstr "Команда поддержки"
+msgstr ""
 
 #: lib/defines.php:105
 msgid "Contact"
-msgstr "Связь"
+msgstr ""
 
 #: lib/defines.php:106
 msgid "Phone"
-msgstr "Телефон"
+msgstr ""
 
 #: lib/defines.php:109
 msgid "Developer Team"
-msgstr "Команда разработчиков"
+msgstr ""
 
 #: lib/defines.php:117
 msgid "Last update"
-msgstr "Последнее обновление"
+msgstr ""
 
 #: lib/defines.php:118
 msgid "Developer Website"
-msgstr "Сайт разработчиков"
+msgstr ""
 
 #: lib/defines.php:123
 msgid "User details"
-msgstr "Данные пользователя"
+msgstr ""
 
 #: lib/defines.php:126
 msgid "Currently logged on as"
-msgstr "Зарегистрирован как"
+msgstr ""
 
 #: lib/defines.php:126
 msgid "a"
-msgstr " "
+msgstr ""
 
 #: lib/defines.php:126
 msgid "and a member of"
-msgstr "и член"
+msgstr ""
+
+#: lib/email_body.php:21 lib/email_body.php:37
+msgid "Conference Owner"
+msgstr ""
 
 #: lib/email_body.php:22 lib/email_body.php:38
 msgid "Conference ID"
-msgstr "Номер конференции"
+msgstr ""
 
 #: lib/email_body.php:27 lib/email_body.php:43
 msgid "Recurrence Information"
-msgstr "Информация о периодичности"
+msgstr ""
 
 #: lib/email_body.php:30 lib/email_body.php:46
 msgid "The conference call can be accessed by calling"
-msgstr "К конференции можно подключиться позвонив на"
+msgstr ""
 
 #: lib/email_body.php:31 lib/email_body.php:47
 msgid "Please contact"
-msgstr "Пожалуйста свяжитесь"
+msgstr ""
 
 #: lib/email_body.php:31 lib/email_body.php:47
 msgid "at"
-msgstr "в"
+msgstr ""
 
 #: lib/email_body.php:31 lib/email_body.php:47
 msgid "for assistance"
-msgstr "для консультации"
+msgstr ""
 
 #: lib/header.php:5
 msgid "Information"
-msgstr "Информация"
+msgstr ""
 
 #: lib/header.php:7
 msgid "Scheduling"
-msgstr "Конференции"
+msgstr ""
 
 #: lib/header.php:9
 msgid "Delete Conferences"
-msgstr "Удалить конференцию"
+msgstr ""
 
 #: lib/header.php:10
 msgid "Past Conferences"
-msgstr "Прошедшие конференции"
+msgstr ""
 
 #: lib/header.php:11
 msgid "Current Conferences"
-msgstr "Текущие конференции"
+msgstr ""
 
 #: lib/header.php:12
 msgid "Future Conferences"
-msgstr "Будущие конференции"
+msgstr ""
 
 #: lib/header.php:22 lib/header.php:28
 msgid "User Management"
-msgstr "Управление пользователями"
+msgstr ""
 
 #: lib/header.php:35
 msgid "Reports"
-msgstr "Отчеты"
+msgstr ""
 
 #: lib/header.php:39
 msgid "About"
-msgstr "О проекте"
+msgstr ""
 
 #: lib/header.php:45
 msgid "Log-off"
-msgstr "Выйти"
+msgstr ""

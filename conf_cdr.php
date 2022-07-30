@@ -2,7 +2,7 @@
 include ("./lib/defines.php");
 include ("./lib/functions.php");
 include ("./lib/database.php");
-//include ("locale.php");
+include ("locale.php");
 
 session_start();
 
@@ -18,15 +18,15 @@ $FG_TABLE_NAME=DB_TABLECDR;
 // First Name of the column in the html page, second name of the field
 $FG_TABLE_COL = array();
 
-$FG_TABLE_COL[]=array (_("Caller Name"), "clid", "50%", "middle", "", "30");
-$FG_TABLE_COL[]=array (_("Telephone"), "src", "25%", "middle", "", "30");
+$FG_TABLE_COL[]=array (_("Caller Name"), "CIDname", "50%", "middle", "", "30");
+$FG_TABLE_COL[]=array (_("Telephone"), "CIDnum", "25%", "middle", "", "30");
 $FG_TABLE_COL[]=array (_("Duration"), "duration", "25%", "middle", "", "30");
 
-$FG_TABLE_DEFAULT_ORDER = "clid";
+$FG_TABLE_DEFAULT_ORDER = "CIDname";
 $FG_TABLE_DEFAULT_SENS = "ASC";
 
 // This Variable store the argument for the SQL query
-$FG_COL_QUERY='clid, src, duration';
+$FG_COL_QUERY='CIDnum, CIDname, duration';
 
 
 // The variable LIMITE_DISPLAY define the limit of record to display by page
@@ -55,12 +55,12 @@ if ( !isset ($order) || !isset ($sens) ){
 
 $now=getConfDate();
 if (isset($bookId)){
-	$FG_TABLE_CLAUSE = "userfield='$bookId'";
+	$FG_TABLE_CLAUSE = "bookId='$bookId'";
 }	
+
 	$i = 0;
 	$query = "SELECT $FG_COL_QUERY FROM $FG_TABLE_NAME WHERE $FG_TABLE_CLAUSE";
 	$result = $db->query($query);
-	
 	if ($FG_DEBUG == 3)
 		print_r ($result);
 	while($row = $result->fetchRow())
@@ -96,8 +96,8 @@ if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
-		<title><?php echo GUI_TITLE; ?> control</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title><?php print GUI_TITLE; ?> control</title>
+		<meta http-equiv="Content-Type" content="text/html">
 		
 		<link rel="stylesheet" type="text/css">
 		<style type="text/css" media="screen">
@@ -123,7 +123,6 @@ if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
 <!-- ** ** ** ** ** Part to display the conference  ** ** ** ** ** -->
 <center>
 <?php if ( (isset($list) && is_array($list)) ){ ?>
-
       <table width="<?php echo $FG_HTML_TABLE_WIDTH; ?>" border="0" align="center" cellpadding="0" cellspacing="0">
 		<TR bgcolor="#ffffff"> 
           <TD bgColor=#7f99cc height=16 style="PADDING-LEFT: 5px; PADDING-RIGHT: 3px"> 
@@ -170,23 +169,18 @@ if ($FG_DEBUG == 3) echo "<br>Nb_record_max : $nb_record_max";
 				
 				
 				  
-				  	 $ligne_number=1;
+				  	 $ligne_number=1;					 
 				  	 foreach ($list as $recordset){ 
-				  	    preg_match('/\"(.+)\"/',$recordset[0],$matches);
-					    $recordset[0] = $matches[1];
-				 	    $ligne_number++;
-					    if ($recordset[0] || $recordset[1]){ ?>
-               		 		    <TR bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2];?>"  onMouseOver="bgColor='#C4FFD7'" onMouseOut="bgColor='<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]; ?>'"> 
+				 	 $ligne_number++; 
+					if ($recordset[0] || $recordset[1]){ ?>
+               		 	<TR bgcolor="<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2];?>"  onMouseOver="bgColor='#C4FFD7'" onMouseOut="bgColor='<?php echo $FG_TABLE_ALTERNATE_ROW_COLOR[$ligne_number%2]; ?>'"> 
 							 
 				  		<?php for($i=0;$i<$FG_NB_TABLE_COL;$i++){ ?>
 						
 						<?php  $record_display = $recordset[$i];
-						       
 				 	 ?>
                  		 <TD width="<?php echo $FG_TABLE_COL[$i][2]; ?>" vAlign=middle align="<?php echo $FG_TABLE_COL[$i][3];?>" class=tableBody>
-		<?php //echo htmlentities( $record_display);
-		echo $record_display;
-		 ?></TD>
+		<?php echo htmlentities( $record_display); ?></TD>
 								 
 
 

@@ -4,12 +4,6 @@ include ("./lib/functions.php");
 include ("./lib/database.php");
 include ("locale.php");
 
-if ($locale != 'en_US') {
-    $button_search = $locale."_button-search.gif";
-} else {
-    $button_search = "button-search.gif";
-}
-
 $s = '';
 $t = '';
 $logoff_section='';
@@ -74,36 +68,30 @@ include ("./lib/leftnav.php");
 			<div id="fedora-content">
 
 
-<?php
-if ($section=="section0" || $section=="section2"){?>
+<?php  if ($section=="section0" || $section=="section1" || $section=="section2"){?>
 
 
-<h1><center><?php  echo GUI_TITLE; ?></center></h1>
+<h1><center><?php  echo GUI_TITLE; ?> <?php print _("Control"); ?></center></h1>
 
-<h2><?php print _("Communicate and control your audience."); ?></h2>
+<?php print _("<h2>Communicate and control your audience.</h2>
 
+<p>Conferencing puts you in complete control of your virtual meetings, bringing them to life in a fully interactive meeting
+room over the Internet.</p>
 
+<p>Now, you can control your conference on your PC screen and manage a dynamic visual presentation over the Internet. </p>"); ?>
 
 <?php }elseif ($section=="section10"){
-
-getpost_ifset(array('confno','book')); ?>
+getpost_ifset('confno'); ?>
 <!-- ** ** ** ** ** Part to select the conference ** ** ** ** ** -->
 &nbsp;
-    <script>
-        function out_call(cN, bI) {
-            window.open ('out_call.php?confno='+cN+'&book='+bI, 'newWin', 'toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=420,height=150')
-        }
-    </script>
-    <script>
-        function out_call_book(cN, bI, uI, pr) {
-            window.open ('out_call_book.php?confno='+cN+'&book='+bI+'&user='+uI+'&privilege='+pr, 'newWinAdd', 'toolbar=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=820,height=600')
-        }
-    </script>
-    <script>
-        function upload_list(cN, bI) {
-            window.open ('upload_file.php?s=1&confno='+cN+'&book='+bI, 'newWinAdd', 'toolbar=no,directories=no,status=no,scrollbars=yes,menubar=no,width=900,height=800')
-        }
-    </script>
+        <script>
+        <!-- Begin
+        function out_call(cN) {
+	window.open ('out_call.php?confno='+cN, 'newWin', 'toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=320,height=10')
+	}
+        //  End -->
+        </script>
+
 <br/>
 <center><?php print _("Select the room number that you want to handle"); ?>
 <FORM METHOD=POST NAME="WMMon" ACTION="conf_control.php?s=1&t=0&order=<?php echo "$order&sens=$sens&current_page=$current_page&PHPSESSID=$PHPSESSID"; ?>" target="superframe">
@@ -124,48 +112,32 @@ getpost_ifset(array('confno','book')); ?>
 		<td class="bar-search" align="left" bgcolor="#555577"> </td>
 
 			<td class="bar-search" align="center" bgcolor="#cddeff">
-				<input type="image"  name="image16" align="top" border="0" src="images/<?php print $button_search ?>" />
+				<input type="image"  name="image16" align="top" border="0" src="images/button-search.gif" />
 
 			</td>
 	</tr>
 	</tbody></table>
 </FORM>
+</center>
 
+<center>
 <iframe name="superframe" src="conf_control.php" BGCOLOR="#FFFFFF"      width=750 height=500 marginWidth=0 marginHeight=0  frameBorder=0  scrolling=auto>
 
 </iframe>
-
-<table border="0" width="50%"> 
+</center> 
+	<table border="0" width="100%"> 
 <?php if ($confno != ""){ ?>
-    <tr>
-        <td>
-            <form METHOD=POST ACTION="conf_add.php?s=1&t=0&order=<?php echo "$order&sens=$sens&current_page=$current_page&PHPSESSID=$PHPSESSID&Extend&confno=$confno"; ?>" target="superframe">
-                <input type="Submit" name="Extend" align="top" border="0" value="<?php echo _("Extend by 10 minutes");?>" />
-            </form>
-        </td>
-        <td>
-            <form METHOD=POST ACTION="meetme_control.php?s=2&t=3" onclick="return conf_action('end','<?PHP echo $confno; ?>', '')">
-                <input type="Submit" name="EndConf" align="top" border="0" value="<?php echo _("Finish conference");?>" />
-            </form>
-        </td>
-        <td>
-            <form METHOD=POST ACTION="meetme_control.php?s=1&t=0&confno=<?php echo $confno;?>&book=<?php echo $book;?>" target="superframe">
-                <input type="Submit" name="Invite" onClick="out_call(<?php echo $confno.", ".$book;?>)" align="top" border="0" value="<?php echo _("Invite participants");?>" />
-            </form>
-        </td>
-        <td>
-            <form METHOD=POST ACTION="meetme_control.php?s=1&t=0&confno=<?php echo $confno;?>&book=<?php echo $book;?>" target="superframe">
-                <input type="Submit" name="Invite_book" onClick="out_call_book(<?php echo $confno.", ".$book.", '".$_SESSION['userid']."'".", '".$_SESSION['privilege']."'";?>)" align="top" border="0" value="<?php echo _("Invite participants from list");?>" />
-            </form>
-        </td>
-        <td>
-            <form METHOD=POST ACTION="meetme_control.php?s=1&t=0&confno=<?php echo $confno;?>&book=<?php echo $book;?>" target="superframe">
-                <input type="Submit" name="Upload" onClick="upload_list(<?php echo $confno.", ".$book;?>)" align="top" border="0" value="<?php echo _("Upload list");?>"" />
-            </form>
-        </td>
-    </tr>
-</table>
-</center>
+	<colgroup><col width="20%"></colgroup>
+	<tr><td><td>
+	<FORM METHOD=POST ACTION="conf_add.php?s=1&t=0&order=<?php echo "$order&sens=$sens&current_page=$current_page&PHPSESSID=$PHPSESSID&Extend&confno=$confno"; ?>" target="superframe">
+	<input type="Submit" name="Extend" align="top" border="0" value="<?php print _("Extend")?>" /> <td><td>
+	</FORM>
+	<FORM METHOD=POST ACTION="meetme_control.php?s=2&t=3" onclick="conf_action('end','<?PHP echo $confno; ?>', '')" >
+	<input type="Submit" name="EndConf" align="top" border="0" value="<?php print _("End Now") ?>" /> 
+	<td>
+	</FORM>
+               <input type="Submit" name="Invite" onClick="out_call(<?php echo $confno; ?>)" align="top" border="0" value="<?php print _("Invite") ?>" />
+               </table>
 
 <script language="javascript">
 <!--
@@ -187,46 +159,52 @@ document.WMMon.confno.focus()
 
 
 <center>
-<iframe name="superframe" id="superframe" src="<?php echo "call_operator.php?atmenu=operator&stitle=Make+Outbound+Call";?>" BGCOLOR=white      width=750 height=450 marginWidth=0 marginHeight=0  frameBorder=0  scrolling=auto>
+<iframe name="superframe" src="<?php echo "call_operator.php?atmenu=operator&stitle=Make+Outbound+Call";?>" BGCOLOR=white      width=750 height=450 marginWidth=0 marginHeight=0  frameBorder=0  scrolling=auto>
+
 </iframe>
 </center>
 
+
 <?php }elseif ($section=="section20"){?>
-<script>
-    function monthPop(objForm,selectIndex) {
-        timeA = new Date(objForm.year.options[objForm.year.selectedIndex].text, objForm.month.options[objForm.month.selectedIndex].value,1);
-        timeDifference = timeA - 86400000;
-        timeB = new Date(timeDifference);
-        var daysInMonth = timeB.getDate();
+	<script>
+	<!-- Begin
+	function monthPop(objForm,selectIndex) {
+	timeA = new Date(objForm.year.options[objForm.year.selectedIndex].text, objForm.month.options[objForm.month.selectedIndex].value,1);
+	timeDifference = timeA - 86400000;
+	timeB = new Date(timeDifference);
+	var daysInMonth = timeB.getDate();
 
-        for (var i = 0; i < objForm.day.length; i++) {
-            objForm.day.options[0] = null;
-        }
-        for (var i = 0; i < daysInMonth; i++) {
-            objForm.day.options[i] = new Option(i+1);
-        }
-        document.WMAdd.day.options[0].selected = true;
-    }
+	for (var i = 0; i < objForm.day.length; i++) {
+		objForm.day.options[0] = null;
+	}
+	for (var i = 0; i < daysInMonth; i++) {
+		objForm.day.options[i] = new Option(i+1);
+	}
+	document.WMAdd.day.options[0].selected = true;
+	}
+	
+	function recurPop(objForm,selectIndex){
+	var recurPrd = (objForm.recurLbl.options[objForm.recurLbl.selectedIndex].value);
+	for (var i = 0; i <= 26 ; i++){
+		objForm.recurPrd.options[i] = null;
+	}
+	for (var i = 0; i <= (recurPrd-2); i++) {
+		if (recurPrd == 14){
+			objForm.recurPrd.options[i] = new Option((i+2)+ <?php print "\" "._("days")."\""; ?>, (i+2));
+		} else {
+		if (recurPrd == 26){
+			objForm.recurPrd.options[i] = new Option((i+2)+ <?php print "\" "._("weeks")."\""; ?>, (i+2));
+		} else {
+			objForm.recurPrd.options[i] = new Option(((i+1)*2)+ <?php print "\" "._("weeks")."\""; ?>, (i+2));
+		}		
+		}
+	}
+		document.WMAdd.recurPrd.options[0].selected = true;	
+	}
 
-    function recurPop(objForm,selectIndex){
-        var recurPrd = (objForm.recurLbl.options[objForm.recurLbl.selectedIndex].value);
-        for (var i = 0; i <= 26 ; i++){
-            objForm.recurPrd.options[i] = null;
-        }
-        for (var i = 0; i <= (recurPrd-2); i++) {
-            if (recurPrd == 14){
-                objForm.recurPrd.options[i] = new Option((i+2)+ <?php print "\" "._("days")."\""; ?>, (i+2));
-            } else {
-                if (recurPrd == 26){
-                    objForm.recurPrd.options[i] = new Option((i+2)+ <?php print "\" "._("weeks")."\""; ?>, (i+2));
-                } else {
-                    objForm.recurPrd.options[i] = new Option(((i+1)*2)+ <?php print "\" "._("weeks")."\""; ?>, (i+2));
-                }
-            }
-        }
-        document.WMAdd.recurPrd.options[0].selected = true;	
-    }
-</script>
+	//  End -->
+	</script>
+
 <!-- ** ** ** ** ** Part to add the conference ** ** ** ** ** -->
 &nbsp;
 <br/>
@@ -239,7 +217,7 @@ if (!isset($bookId)) {
 	
 
 if ($bookId){
-	$FG_COL_QUERY='confno, confDesc, starttime, endtime, dateReq, maxusers, bookId, pin, confOwner, adminpin, adminopts, opts';
+	$FG_COL_QUERY='confno, confDesc, starttime, endtime, dateReq, maxUser, bookId, pin, confOwner, adminpin, adminopts, opts';
 	$result = $db->query("SELECT $FG_COL_QUERY FROM booking WHERE bookId='$bookId'");
 	$recordset = $result->fetchRow();
 	$confno = $recordset[0];
@@ -247,7 +225,7 @@ if ($bookId){
 	$starttime = $recordset[2];
 	$endtime = $recordset[3];
 	$dateReq = $recordset[4];
-	$maxusers = $recordset[5];
+	$maxUser = $recordset[5];
 	$bookId = $recordset[6];
 	$pin = $recordset[7];
 	$confOwner = $recordset[8];
@@ -532,10 +510,10 @@ $tmp=intval(date("Y", $starttime));
 				<font face="arial" size="1" color="#ffffff"><b>&nbsp;&nbsp;<SPAN title=" How many callers may join " class="popup"><?php print _("Max Participants"); ?> :</SPAN></b></font>
 			</td>
 			<td class="bar-search" align="left" bgcolor="#acbdee">
-	<?php if (isset($maxusers)) { ?>
-			<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="maxusers" value=<?php echo $maxusers; ?> size=5></td>
+	<?php if (isset($maxUser)) { ?>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="maxUser" value=<?php echo $maxUser; ?> size=5></td>
 	<?php } else { ?>
-			<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="maxusers" value="10" size=5></td>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td>&nbsp;&nbsp;<INPUT TYPE="text" NAME="maxUser" value="10" size=5></td>
 	<?php } ?>
 			</tr></table></td>
 		</tr>
@@ -625,7 +603,7 @@ document.WMAdd.confDesc.focus()
 		<td class="bar-search" align="left" bgcolor="#555577"> </td>
 
 			<td class="bar-search" align="center" bgcolor="#cddeff">
-				<input type="image"  name="image16" align="top" border="0" src="images/<?php print $button_search ?>" />
+				<input type="image"  name="image16" align="top" border="0" src="images/button-search.gif" />
 
 			</td>
 	</tr>
@@ -669,7 +647,7 @@ document.WMDel.confno.focus()
 		<td class="bar-search" align="left" bgcolor="#555577"> </td>
 
 			<td class="bar-search" align="center" bgcolor="#cddeff">
-				<input type="image"  name="image16" align="top" border="0" src="images/<?php print $button_search ?>" />
+				<input type="image"  name="image16" align="top" border="0" src="images/button-search.gif" />
 
 			</td>
 	</tr>
@@ -717,7 +695,7 @@ document.WMDel.confno.focus()
 		<td class="bar-search" align="left" bgcolor="#555577"> </td>
 
 			<td class="bar-search" align="center" bgcolor="#cddeff">
-				<input type="image"  name="image16" align="top" border="0" src="images/<?php print $button_search ?>" />
+				<input type="image"  name="image16" align="top" border="0" src="images/button-search.gif" />
 
 			</td>
 	</tr>
@@ -919,13 +897,8 @@ document.WMLogon.AUTH_USER.focus()
 </script>
 
 </center>
-<?php }elseif($section=="section1"){
-    //echo "Адресная";
-    include("./lib/addressbook.php");
-?>
 
 <?php }else{?>
-
 <?php
 echo $section;   
 ?>
@@ -945,6 +918,6 @@ if(PASSWORD_OPTION=="YES")
 		<div id="fedora-footer">
 		</div>
 		<!-- footer END -->
-<pre><?php //print_r($array); ?></pre>
+
 	</body>
 </html>

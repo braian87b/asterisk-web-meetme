@@ -13,14 +13,10 @@ var ua = window.navigator.userAgent;
 var msie = ua.indexOf ( "MSIE " );
 var pu = null;
 
-function conf_rxtxcurent(cN, cM) {
-        window.open ('conf_rxtxcurent.php?channel='+cN+'&command='+cM, 'newWin', 'toolbar=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=50,height=50')
-}
-
-function conf_action(action, confno, user, channel, command)
+function conf_action(action, confno, user)
 {
         var url = '<?PHP echo WEBROOT;  ?>' + 'conf_actions.php';
-        var params = 'action=' + action + '&confno=' + confno + '&user_id=' + user + '&channel=' + channel + '&command=' + command;
+        var params = 'action=' + action + '&confno=' + confno + '&user_id=' + user;
         new Ajax.Request(url,
                 {method: 'post',
                 parameters: params
@@ -33,8 +29,8 @@ function conf_action(action, confno, user, channel, command)
 
 function togglePass()
 {
-        //document.WMAdd.silPass.disabled = !document.WMAdd.silPass.disabled;
-        //document.WMAdd.roomPass.disabled = !document.WMAdd.roomPass.disabled;
+        document.WMAdd.silPass.disabled = !document.WMAdd.silPass.disabled;
+        document.WMAdd.roomPass.disabled = !document.WMAdd.roomPass.disabled;
 }
 
 function addRowToTable(tableName)
@@ -232,39 +228,8 @@ else
  return false;
 }
 
-function getXmlHttp(){
-  var xmlhttp;
-  try {
-    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-  } catch (e) {
-    try {
-      xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-    } catch (E) {
-      xmlhttp = false;
-    }
-  }
-  if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-    xmlhttp = new XMLHttpRequest();
-  }
-  return xmlhttp;
-}
 
-function call_add(nM,nU,rX,tX,cN,bI) {
-  var req = getXmlHttp();
-  var statusElem = document.getElementById(nU);
-  req.onreadystatechange = function() {
-    if (req.readyState == 4) {
-      statusElem.innerHTML = req.statusText;
-      if(req.status == 200) {
-        //  alert("Ответ сервера: "+req.responseText);
-      }
-    }
-  }
-  req.open('GET', 'call_operator_add.php?name='+nM+'&invite_num='+nU+'&action=quickcall&data='+cN+'&bookid='+bI+'&rx='+rX+'&tx='+tX, true);
-  req.send(null);
-  statusElem.innerHTML = 'Ожидание...';
-}
+// end.
 
-// end
 //-->
 </script>

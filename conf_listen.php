@@ -26,11 +26,10 @@ $FG_TABLE_COL[]=array (_("Start"), "starttime", "20%", "left", "SORT", "30");
 $FG_TABLE_COL[]=array (_("End"), "endtime", "20%", "left", "", "30");
 
 $FG_TABLE_DEFAULT_ORDER = "starttime";
-//$FG_TABLE_DEFAULT_SENS = "ASC";
-$FG_TABLE_DEFAULT_SENS = "DESC";
+$FG_TABLE_DEFAULT_SENS = "ASC";
 
 // This Variable store the argument for the SQL query
-$FG_COL_QUERY='confno, confDesc, starttime, endtime, maxusers, bookId, pin, confOwner, adminpin, adminopts, opts';
+$FG_COL_QUERY='confno, confDesc, starttime, endtime, maxUser, bookId, pin, confOwner, adminpin, adminopts, opts';
 
 
 // The variable LIMITE_DISPLAY define the limit of record to display by page

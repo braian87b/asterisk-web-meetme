@@ -35,3 +35,7 @@ r284 | dan_austin | 2011-11-28 12:16:32 -0800 (Mon, 28 Nov 2011) | 1 line
 
 Unify conf_actions and clean-up monitor code, restore missing recording filename support in the database
 ------------------------------------------------------------------------
+r286 | dan_austin | 2011-12-07 13:30:53 -0800 (Wed, 07 Dec 2011) | 1 line
+
+Fix play.php to use configured recording file path.
+------------------------------------------------------------------------

@@ -774,7 +774,7 @@
     * @param string $extension
     * @param string $priority
     */
-    function gotoo($context, $extension='s', $priority=1)
+    function goto($context, $extension='s', $priority=1)
     {
       $this->set_context($context);
       $this->set_extension($extension);
